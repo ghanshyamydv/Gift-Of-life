@@ -1,0 +1,45 @@
+.custom-slider-container{
+    width: 100%;
+    height: 75vh;
+    position: relative;
+    overflow: hidden;
+}
+.slide-container{
+    width: 100%;
+    height: 100%; 
+    display: flex;
+}
+
+.slide-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  font-size: 2rem;
+  cursor: pointer;
+  z-index: 1000;
+}
+
+.prev {
+  left: 10px;
+}
+
+.next {
+  right: 10px;
+}
+
+.fa-solid{
+    color: #fff;
+    font-size: 3rem;
+    opacity:0.6;
+}
+
+.slide{
+   min-width: 100%;
+}
+  
+.slide img{
+    width: 100%; 
+    height: 100%; 
+}
