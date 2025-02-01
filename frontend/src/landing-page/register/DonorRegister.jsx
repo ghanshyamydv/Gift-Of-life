@@ -5,8 +5,6 @@ import axios from "axios";
 function DonorRegister() {
   const [moneyInput, setMoneyInput] = useState(false);
   const [someOrgan, setSomeOrgan] = useState(false);
-  const [organsAndTissuesData, setOrgansAndTissuesData]=useState([]);
-  const [otherOrgans, setOtherOrgans] = useState({otherOrganTissue:""});
 
   const [responseMessage, setResponseMessage] = useState("");
 
@@ -14,99 +12,127 @@ function DonorRegister() {
     fullName: "",
     dateOfBirth: "",
     gender: "",
-    address: {
-      street: "",
-      city: "",
-      state: "",
-      zipCode: "",
-      country: "",
-    },
     email: "",
     phoneNumber: "",
-    emergencyContact: {
-      name: "",
-      donorRelationship: "",
-      email: "",
-      phoneNumber: "",
-    },
-    organsAndTissues:[],
     consent:false,
     signature: "",
     date: "",
-    witnessDetail: {
-      name: "",
-      donorRelationship: "",
-      signature: "",
-    },
-    medicalPractitioner: {
-      name: "",
-      role: "",
-      signature: "",
-    },
     religious: "",
     conditions: "",
     notes: "",
     donationAmount:0,
-    photo: null,
-    citizenship: null,
     confirmation:false
   });
 
 
-  const handleInputChange = (event) => {
-    const { name, value, type, checked, files } = event.target;
-    // If the field is a checkbox, we use checked value
+  let [address,setAddress]=useState({
+    street: "",
+    city: "",
+    state: "",
+    zipCode: "",
+    country: "",
+  });
+
+  let [emergencyContact, setEmergencyContact]=useState({
+    name: "",
+    donorRelationship: "",
+    email: "",
+    phoneNumber: "",
+  });
+
+  let [witnessDetail, setWitnessDetail]=useState({
+    name: "",
+    donorRelationship: "",
+    signature: "",
+  });
+
+  let [medicalPractitioner, setMedicalPractitioner]=useState({
+    name: "",
+    role: "",
+    signature: "",
+  });
+
+  const [organsAndTissuesData, setOrgansAndTissuesData]=useState([]);
+  const [otherOrgans, setOtherOrgans] = useState({otherOrganTissue:""});
+  const [photo, setPhoto]=useState(null);
+  const [citizenship, setCitizenship]=useState(null);
+  const handleDonorInputChange = (event) => {
+    const { name, value, type, checked} = event.target;
+  //   // If the field is a checkbox, we use checked value
     const updatedValue = type === "checkbox" ? checked : value;
 
     setDonorDetails((prevDetails) => {
-      const keys = name.split(".");  // To handle nested fields
-      if (keys.length > 1) {
-        // If the name is for a nested field (e.g. address.street)
-        return {
-          ...prevDetails,
-          [keys[0]]: {
-            ...prevDetails[keys[0]],
-            [keys[1]]: updatedValue,  // Update the nested field
-          },
-        };
-      }
-
-      // For non-nested fields (e.g. fullName, age, consent)
-      if(name==="photo" || name === "citizenship"){
-        return {
-          ...prevDetails,
-          [name]: files[0]
-        }
-    }else {
-        return {
-        ...prevDetails,
-        [name]: updatedValue
-      };}
-
+              return {
+              ...prevDetails,
+              [name]: updatedValue
+              };
     });
   };
 
 
+  const handleAddressInputChange = (event) => {
+    const { name, value} = event.target;
+    setAddress((prevDetails) => {
+              return {
+              ...prevDetails,
+              [name]: value
+              };
+    });
+  };
+
+  const handleEmergencyContactInputChange= (event) => {
+    const { name, value} = event.target;
+    setEmergencyContact((prevDetails) => {
+              return {
+              ...prevDetails,
+              [name]: value
+              };
+    });
+  };
+
+  const handlewitnessDetailInputChange =(event) => {
+    const { name, value} = event.target;
+    setWitnessDetail((prevDetails) => {
+              return {
+              ...prevDetails,
+              [name]: value
+              };
+    });
+  };
+
+  const handleMedicalPractitionerInputChange =(event) => {
+    const { name, value} = event.target;
+    setMedicalPractitioner((prevDetails) => {
+              return {
+              ...prevDetails,
+              [name]: value
+              };
+    });
+  };
+
   const handleSubmit = async (event)=>{
     event.preventDefault();
-    if(!someOrgan){
-      donorDetails={...donorDetails,organsAndTissues:["all organs and tissue after death"]}
-    }else{
-      donorDetails={...donorDetails,organsAndTissues:[...organsAndTissuesData,otherOrgans]}
-    }
+
+      let organsAndTissues=[];
+      if(!someOrgan){
+        organsAndTissues=["all organs and tissue after death"]
+      }else{
+        organsAndTissues=[...organsAndTissuesData,otherOrgans]
+      }
 
     const formData = new FormData();
+    
+    // Append non-file data as JSON strings
+    formData.append("donorDetails", JSON.stringify(donorDetails));
+    formData.append("address", JSON.stringify(address));
+    formData.append("emergencyContact", JSON.stringify(emergencyContact));
+    formData.append("witnessDetail", JSON.stringify(witnessDetail));
+    formData.append("medicalPractitioner", JSON.stringify(medicalPractitioner));
+    formData.append("organsAndTissues", JSON.stringify(organsAndTissues));
+    formData.append("photo",photo);
+    formData.append("citizenship",citizenship);
 
-    // Loop through donorDetails and append each property
-    Object.entries(donorDetails).forEach(([key, value]) => {
-      formData.append(key, value);
-    });
-
-// const formDataObj = Object.fromEntries(formData.entries());
-// console.log(formDataObj);
-
-
-// sending data to backend
+    // sending data to backend
     try {
       const response = await axios.post(
         "http://localhost:4000/donor-register", // Example API
@@ -131,7 +157,7 @@ function DonorRegister() {
       </p>
       <h3>Personal Information</h3>
       <hr />
-      <form action="" onSubmit={handleSubmit}>
+      <form action="" onSubmit={handleSubmit} >
         <div className="row">
           <div className="col-7 mb-3">
             <label htmlFor="full-name" className="form-label">
@@ -143,7 +169,7 @@ function DonorRegister() {
               id="full-name"
               name="fullName"
               value={donorDetails.fullName}
-              onChange={handleInputChange}
+              onChange={handleDonorInputChange}
             />
           </div>
           <div className="col-7 mb-3">
@@ -156,51 +182,23 @@ function DonorRegister() {
               id="birth-date"
               name="dateOfBirth"
               value={donorDetails.dateOfBirth}
-              onChange={handleInputChange}
+              onChange={handleDonorInputChange}
             />
           </div>
-          <div className="col-7 mb-5">
+  
+          <div className="mb-3 col-7">
             <label className="form-label">Gender *</label>
-            <div className="form-check">
-              <input
-                className="form-check-input border-dark"
-                type="radio"
-                id="male"
-                name="gender"
-                value="male"
-                onChange={handleInputChange}
-              />
-              <label className="form-check-label" htmlFor="male">
-                Male
-              </label>
-            </div>
-            <div className="form-check">
-              <input
-                className="form-check-input border-dark"
-                type="radio"
-                name="gender"
-                id="female"
-                value="female"
-                onChange={handleInputChange}
-              />
-              <label className="form-check-label" htmlFor="female">
-                Female
-              </label>
-            </div>
-
-            <div className="form-check">
-              <input
-                className="form-check-input border-dark"
-                type="radio"
-                name="gender"
-                id="other"
-                value="other"
-                onChange={handleInputChange}
-              />
-              <label className="form-check-label" htmlFor="other">
-                Other
-              </label>
-            </div>
+            <select
+              name="gender"
+              value={donorDetails.gender}
+              onChange={handleDonorInputChange}
+              className="form-select"
+            >
+              <option value="" disabled>Select Gender</option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+              <option value="other">Other</option>
+            </select>
           </div>
 
           <h3>Address</h3>
@@ -212,9 +210,9 @@ function DonorRegister() {
               type="text"
               className="form-control border-dark"
               id="street"
-              name="address.street"
-              value={donorDetails.address.street}
-              onChange={handleInputChange}
+              name="street"
+              value={address.street}
+              onChange={handleAddressInputChange}
             />
           </div>
           <div className="col-7 mb-3">
@@ -225,9 +223,9 @@ function DonorRegister() {
               type="text"
               className="form-control border-dark"
               id="city"
-              name="address.city"
-              value={donorDetails.address.city}
-              onChange={handleInputChange}
+              name="city"
+              value={address.city}
+              onChange={handleAddressInputChange}
             />
           </div>
           <div className="col-7 mb-3">
@@ -238,9 +236,9 @@ function DonorRegister() {
               type="text"
               className="form-control border-dark"
               id="state/province"
-              name="address.state"
-              value={donorDetails.address.state}
-              onChange={handleInputChange}
+              name="state"
+              value={address.state}
+              onChange={handleAddressInputChange}
             />
           </div>
           <div className="col-7 mb-3">
@@ -252,9 +250,9 @@ function DonorRegister() {
               type="text"
               className="form-control border-dark"
               id="zip/postal-code"
-              name="address.zipCode"
-              value={donorDetails.address.zipCode}
-              onChange={handleInputChange}
+              name="zipCode"
+              value={address.zipCode}
+              onChange={handleAddressInputChange}
             />
           </div>
 
@@ -266,9 +264,9 @@ function DonorRegister() {
               type="text"
               className="form-control border-dark"
               id="country"
-              name="address.country"
-              value={donorDetails.address.country}
-              onChange={handleInputChange}
+              name="country"
+              value={address.country}
+              onChange={handleAddressInputChange}
             />
           </div>
 
@@ -285,7 +283,7 @@ function DonorRegister() {
               name="email"
               placeholder="name@example.com"
               value={donorDetails.email}
-              onChange={handleInputChange}
+              onChange={handleDonorInputChange}
             />
           </div>
           <div className="mb-3 col-7">
@@ -298,7 +296,7 @@ function DonorRegister() {
               id="mobile-number"
               name="phoneNumber"
               value={donorDetails.phoneNumber}
-              onChange={handleInputChange}
+              onChange={handleDonorInputChange}
             />
           </div>
 
@@ -312,9 +310,9 @@ function DonorRegister() {
               type="text"
               className="form-control border-dark"
               id="emergency-full-name"
-              name="emergencyContact.name"
-              value={donorDetails.emergencyContact.name}
-              onChange={handleInputChange}
+              name="name"
+              value={emergencyContact.name}
+              onChange={handleEmergencyContactInputChange}
             />
           </div>
           <div className="col-7 mb-3">
@@ -325,9 +323,9 @@ function DonorRegister() {
               type="text"
               className="form-control border-dark"
               id="relationship"
-              name="emergencyContact.donorRelationship"
-              value={donorDetails.emergencyContact.donorRelationship}
-              onChange={handleInputChange}
+              name="donorRelationship"
+              value={emergencyContact.donorRelationship}
+              onChange={handleEmergencyContactInputChange}
             />
           </div>
           <div className="mb-3 col-7">
@@ -338,10 +336,10 @@ function DonorRegister() {
               type="email"
               className="form-control border-dark"
               id="emergency-email"
-              name="emergencyContact.email"
               placeholder="name@example.com"
-              value={donorDetails.emergencyContact.email}
-              onChange={handleInputChange}
+              name="email"
+              value={emergencyContact.email}
+              onChange={handleEmergencyContactInputChange}
             />
           </div>
           <div className="mb-3 col-7">
@@ -352,9 +350,9 @@ function DonorRegister() {
               type="number"
               className="form-control border-dark"
               id="emergency-mobile-number"
-              name="emergencyContact.phoneNumber"
-              value={donorDetails.emergencyContact.phoneNumber}
-              onChange={handleInputChange}
+              name="phoneNumber"
+              value={emergencyContact.phoneNumber}
+              onChange={handleEmergencyContactInputChange}
             />
           </div>
 
@@ -405,7 +403,7 @@ function DonorRegister() {
               id="consent"
               name="consent"
               checked={donorDetails.consent}
-              onChange={handleInputChange}
+              onChange={handleDonorInputChange}
             />
             <label className="form-check-label" htmlFor="consent">
               By filling this form, I declare that:
@@ -445,7 +443,7 @@ function DonorRegister() {
               id="donor-signature"
               name="signature"
               value={donorDetails.signature}
-              onChange={handleInputChange}
+              onChange={handleDonorInputChange}
             />
           </div>
           <div className="col-7 mb-3">
@@ -458,7 +456,7 @@ function DonorRegister() {
               id="registeration-date"
               name="date"
               value={donorDetails.date}
-              onChange={handleInputChange}
+              onChange={handleDonorInputChange}
             />
           </div>
 
@@ -476,9 +474,9 @@ function DonorRegister() {
               type="text"
               className="form-control border-dark"
               id="emergency-full-name"
-              name="witnessDetail.name"
-              value={donorDetails.witnessDetail.name}
-              onChange={handleInputChange}
+              name="name"
+              value={witnessDetail.name}
+              onChange={handlewitnessDetailInputChange}
             />
           </div>
           <div className="col-7 mb-3">
@@ -489,9 +487,9 @@ function DonorRegister() {
               type="text"
               className="form-control border-dark"
               id="donor-relationship"
-              name="witnessDetail.donorRelationship"
-              value={donorDetails.witnessDetail.donorRelationship}
-              onChange={handleInputChange}
+              name="donorRelationship"
+              value={witnessDetail.donorRelationship}
+              onChange={handlewitnessDetailInputChange}
             />
           </div>
           <div className="col-7 mb-3">
@@ -502,9 +500,9 @@ function DonorRegister() {
               type="text"
               className="form-control border-dark"
               id="witness-signature"
-              name="witnessDetail.signature"
-              value={donorDetails.witnessDetail.signature}
-              onChange={handleInputChange}
+              name="signature"
+              value={witnessDetail.signature}
+              onChange={handlewitnessDetailInputChange}
             />
           </div>
 
@@ -521,9 +519,9 @@ function DonorRegister() {
               type="text"
               className="form-control border-dark"
               id="emergency-full-name"
-              name="medicalPractitioner.name"
-              value={donorDetails.medicalPractitioner.name}
-              onChange={handleInputChange}
+              name="name"
+              value={medicalPractitioner.name}
+              onChange={handleMedicalPractitionerInputChange}
             />
           </div>
           <div className="col-7 mb-3">
@@ -534,9 +532,9 @@ function DonorRegister() {
               type="text"
               className="form-control border-dark"
               id="practitioner-role"
-              name="medicalPractitioner.role"
-              value={donorDetails.medicalPractitioner.role}
-              onChange={handleInputChange}
+              name="role"
+              value={medicalPractitioner.role}
+              onChange={handleMedicalPractitionerInputChange}
             />
           </div>
           <div className="col-7 mb-3">
@@ -547,9 +545,9 @@ function DonorRegister() {
               type="text"
               className="form-control border-dark"
               id="practitioner-signature"
-              name="medicalPractitioner.signature"
-              value={donorDetails.medicalPractitioner.signature}
-              onChange={handleInputChange}
+              name="signature"
+              value={medicalPractitioner.signature}
+              onChange={handleMedicalPractitionerInputChange}
             />
           </div>
 
@@ -564,7 +562,7 @@ function DonorRegister() {
               id="relegion"
               name="religious"
               value={donorDetails.religious}
-              onChange={handleInputChange}
+              onChange={handleDonorInputChange}
             />
             <br />
             <label htmlFor="conditions" className="form-label">
@@ -576,7 +574,7 @@ function DonorRegister() {
               id="conditions"
               name="conditions"
               value={donorDetails.conditions}
-              onChange={handleInputChange}
+              onChange={handleDonorInputChange}
             />
             <br />
             <label htmlFor="notes" className="form-label">
@@ -588,7 +586,7 @@ function DonorRegister() {
               id="notes"
               name="notes"
               value={donorDetails.notes}
-              onChange={handleInputChange}
+              onChange={handleDonorInputChange}
             />
           </div>
 
@@ -601,7 +599,7 @@ function DonorRegister() {
                 id="for-free"
                 name="donationAmount"
                 value={0}
-                onChange={handleInputChange}
+                onChange={handleDonorInputChange}
                 onClick={() => {
                   setMoneyInput(false);
                 }}
@@ -617,7 +615,7 @@ function DonorRegister() {
                 id="for-money"
                 name="donationAmount"
                 value={0}
-                onChange={handleInputChange}
+                onChange={handleDonorInputChange}
                 onClick={() => {
                   setMoneyInput(true);
                 }}
@@ -633,7 +631,7 @@ function DonorRegister() {
                   name="donationAmount"
                   placeholder="Enter your amount here.."
                   value={donorDetails.donationAmount}
-                  onChange={handleInputChange}
+                  onChange={handleDonorInputChange}
                 />
               )}
             </div>
@@ -643,7 +641,7 @@ function DonorRegister() {
               <br />
               <input type="file" 
               name="photo"
-              onChange={handleInputChange}
+              onChange={(event)=>{setPhoto(event.target.files[0])}}
               />
               <br />
 
@@ -654,7 +652,7 @@ function DonorRegister() {
               <br />
               <input type="file" 
               name="citizenship"
-              onChange={handleInputChange}
+              onChange={(event)=>{setCitizenship(event.target.files[0])}}
               />
               <br />
             </div>
@@ -668,7 +666,7 @@ function DonorRegister() {
               id="confirm"
               name="confirmation"
             checked={donorDetails.confirmation}
-            onChange={handleInputChange}
+            onChange={handleDonorInputChange}
             />
             <label className="form-check-label" htmlFor="confirm">
               I have read the privacy statement and give consent for the use of

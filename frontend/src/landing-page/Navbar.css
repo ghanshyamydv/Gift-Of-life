@@ -3,8 +3,6 @@
   color: Black;
 }
     .top-nav{
-    /* background-image:url("../../public/images/background.jpg");
-    background-size:cover; */
     background-color: rgba(0, 74, 99, 0.842);
     padding: 0.4rem;
     display: flex;
@@ -23,7 +21,6 @@
 
    .bottom-nav{
     padding: 1rem;
-    /* padding-right: 10rem; */
     display: flex;
     align-items: center;
     justify-content: end;
@@ -53,7 +50,7 @@
     cursor: pointer;
    }
    
-   .recepient{
+   .recipient{
     background-color: rgba(238, 81, 24, 0.884);
    }
    .register:hover{
@@ -61,7 +58,7 @@
    }
 
    .web-logo{
-    width: 90px;
+    width: 75px;
     position: absolute;
     top: 0px;
     left: 80px; 

@@ -1,19 +1,23 @@
-if (process.env.NODE_ENV !== "production") {
-    const dotenv = await import("dotenv");
-    dotenv.config();
-  }
+import "dotenv/config";
 
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import Donor from "./models/donor.model.js";
+import Recepient from "./models/recepient.model.js";
+import User from "./models/user.model.js"
 import multer from "multer";
+import { storage } from "./cloudinary.js";
+
 const app = express();
 
+//middlewares----------------------------
 app.use(cors());
 app.use(express.json());
+
+//database connection----------------------------
 // const atlasdbURL = process.env.ATLASDB_URL;
-const atlasdbURL = "mongodb://localhost:27017/";
+const atlasdbURL = "mongodb://localhost:27017/GiftOfLife";
 db()
   .then((res) => console.log("connection sucessful"))
   .catch((err) => console.log(err));
@@ -21,24 +25,14 @@ db()
 async function db() {
   await mongoose.connect(atlasdbURL);
 }
+//---------------------------------------------
 
-//multer config ------------------
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, './images'); // Store files in the "uploads" folder
-  },
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + '-' + file.originalname); // Rename files to avoid collisions
-  }
-});
-
-const upload=multer({storage});
-//-----------------------
+const upload = multer({ storage });
 
 app.get("/", (req, res) => {
-  const data={
-    name:"mohan",
-    age:18
+  const data = {
+    name: "mohan",
+    age: 18,
   };
   try {
     // Simulate data fetching
@@ -48,36 +42,87 @@ app.get("/", (req, res) => {
   }
 });
 
-app.post("/donor-register",
+app.post(
+  "/donor-register",
   upload.fields([
-  { name: "photo", maxCount: 1 },         // Field name for photo, max 1 file
-  { name: "citizenship", maxCount: 1 }    // Field name for citizenship, max 1 file
-]),
-async (req, res) => {
+    { name: "photo", maxCount: 1 }, // Field name for photo, max 1 file
+    { name: "citizenship", maxCount: 1 }, // Field name for citizenship, max 1 file
+  ]),
+  async (req, res, next) => {
+    const donorDetails = JSON.parse(req.body.donorDetails);
+    const address = JSON.parse(req.body.address);
+    const emergencyContact = JSON.parse(req.body.emergencyContact);
+    const witnessDetail = JSON.parse(req.body.witnessDetail);
+    const medicalPractitioner = JSON.parse(req.body.medicalPractitioner);
+    const organsAndTissues = JSON.parse(req.body.organsAndTissues);
+
+    const photoUrl = req.files.photo[0].path;
+    const photoFilename = req.files.photo[0].filename;
+
+    const citizenshipUrl = req.files.citizenship[0].path;
+    const citizenshipFilename = req.files.citizenship[0].filename;
+
+    const newDonor = new Donor({
+      ...donorDetails,
+      address,
+      emergencyContact,
+      witnessDetail,
+      medicalPractitioner,
+      organsAndTissues,
+      photo: { filename: photoFilename, url: photoUrl },
+      citizenship: { filename: citizenshipFilename, url: citizenshipUrl },
+    });
+    // console.log(newDonor);
+    await newDonor.save();
+  }
+);
+
+app.post(
+  "/recepient-register",
+    upload.fields([
+    { name: "photo", maxCount: 1 },          // Field name for photo, max 1 file
+    { name: "citizenship", maxCount: 1 },    // Field name for citizenship, max 1 file
+    { name: "hospitalDocs", maxCount: 1 }    // Field name for hospital documents 1 file
+  ]),
+  async (req, res) =>{
+    const photoUrl = req.files.photo[0].path;
+    const photoFilename = req.files.photo[0].filename;
+
+    const citizenshipUrl = req.files.citizenship[0].path;
+    const citizenshipFilename = req.files.citizenship[0].filename;
+
+    const hospitalDocsUrl = req.files.hospitalDocs[0].path;
+    const hospitalDocsFilename = req.files.hospitalDocs[0].filename;
+
+    const newRecepient = new Recepient({
+      ...req.body,
+      photo: { filename: photoFilename, url: photoUrl },
+      citizenship: { filename: citizenshipFilename, url: citizenshipUrl },
+      hospitalDocs: { filename: hospitalDocsFilename, url: hospitalDocsUrl }
+    });
+    // console.log(newDonor);
+    await newRecepient.save();
+  }
+);
+
+//---------------------------------
+
+app.post("/signup", async (req, res) =>{  
+    const newUser = new User(req.body);
+    await newUser.save()
+    res.status(200).json({
+      success: true,
+      message: 'Data received and processed successfully',
+    });
+});
+
+app.post("/login",async (req, res) =>{
   console.log(req.body);
-  
-  // const newDonor=new Donor(req.body);
-  // await newDonor.save();
-  // try {
-  //   if (!req.body) {
-  //     throw new Error("Data submition failed!");
-  //   }
-  //   res.status(201).json({ message: "Data received successfully" });
-  // } catch (err) {
-  //   next(err); // Pass error to middleware
-  // }
-
+  res.status(200).json({
+    success: true,
+    message: 'Data received and processed successfully',
   });
-
-app.post("/recepient-register",
-  upload.fields([
-  { name: "photo", maxCount: 1 },          // Field name for photo, max 1 file
-  { name: "citizenship", maxCount: 1 },    // Field name for citizenship, max 1 file
-  { name: "hospitalDocs", maxCount: 1 }    // Field name for hospital documents 1 file
-]),
-(req, res) => {
-  console.log("recepientdata",req.body);
-  });
+});
 
 app.all("*", (req, res, next) => {
   let err = new expressError(400, "Page Not Found!");

@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 function Story() {
   return (
     <div className='container mt-5 mb-5'>
-        <h1 className='mb-3 d-block fw-bold'>Recepient Stories</h1>
+        <h1 className='mb-3 d-block fw-bold'>Recipient Stories</h1>
         <div className='row no-gutters d-flex justify-content-between'>
             <Link className="col text-decoration-none">
             <div className="card bg-secondary-subtle">
@@ -33,7 +33,7 @@ function Story() {
             </div>
             </div>
             </Link>
-            <div className="text-center mt-2"><Link className="custom-link fs-5 btn btn-secondary ps-4 pe-4 mt-3 text-white fw-semibold" to="register-donor">See all Stories</Link></div>
+            <div className="text-center mt-2"><Link className="custom-link fs-5 btn btn-secondary ps-4 pe-4 mt-3 text-white fw-semibold" to="/recipient-stories">See all Stories</Link></div>
         </div>
     </div>
   )

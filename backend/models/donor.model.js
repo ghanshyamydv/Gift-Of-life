@@ -110,22 +110,23 @@ const donorSchema = new mongoose.Schema({
     min:0
   },
   photo: {
-    type: String,
-    default:
-      "https://i.pinimg.com/474x/0a/52/d5/0a52d5e52f7b81f96538d6b16ed5dc2b.jpg",
-    set: (v) =>
-      v === ""
-        ? "https://i.pinimg.com/474x/0a/52/d5/0a52d5e52f7b81f96538d6b16ed5dc2b.jpg"
-        : v,
+    filename:String,
+    url:String,
   },
   citizenship: {
-    type: String,
-    // required: true,
+    filename:String,
+    url:String,
   },
   confirmation: {
     type:Boolean,
     required:true
   },
+//   userId: {
+//     type: mongoose.Schema.Types.ObjectId,
+//     ref: 'User',
+//     required: true,
+//     unique: true // Ensures one donorDetail per user
+// },
 });
 
 const Donor = mongoose.model("Donor", donorSchema);

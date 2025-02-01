@@ -1,0 +1,40 @@
+ // const handleInputChange = (event) => {
+  //   const { name, value, type, checked, files } = event.target;
+  //   // If the field is a checkbox, we use checked value
+  //   const updatedValue = type === "checkbox" ? checked : value;
+
+  //   setDonorDetails((prevDetails) => {
+  //     const keys = name.split(".");  // To handle nested fields
+  //     if (keys.length > 1) {
+  //       // If the name is for a nested field (e.g. address.street)
+  //       return {
+  //         ...prevDetails,
+  //         [keys[0]]: {
+  //           ...prevDetails[keys[0]],
+  //           [keys[1]]: updatedValue,  // Update the nested field
+  //         },
+  //       };
+  //     }
+
+  //     // For non-nested fields (e.g. fullName, age, consent)
+  //     if(name==="photo" || name === "citizenship"){
+  //       return {
+  //         ...prevDetails,
+  //         [name]: files[0]
+  //       }
+  //   }else {
+  //       return {
+  //       ...prevDetails,
+  //       [name]: updatedValue
+  //     };}
+
+  //   });
+  // };
+
+  // Loop through donorDetails and append each property
+    // Object.entries(donorDetails).forEach(([key, value]) => {
+    //   formData.append(key, value);
+    // });
+
+// const formDataObj = Object.fromEntries(formData.entries());
+// console.log(formDataObj);

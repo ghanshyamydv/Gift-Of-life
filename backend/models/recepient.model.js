@@ -1,11 +1,11 @@
 import mongoose from "mongoose";
-const recepientSchema = new mongoose.Schema({
+const recipientSchema = new mongoose.Schema({
   fullName: {
     type: String,
     required: true,
   },
   dateOfBirth: {
-    type: Date,
+    type: String,
     required: true,
   },
   gender: {
@@ -50,7 +50,7 @@ const recepientSchema = new mongoose.Schema({
       type: String,
       required: true,
     },
-    recepientRelationship:{
+    recipientRelationship:{
         type:String,
         required:true
     },
@@ -67,7 +67,7 @@ const recepientSchema = new mongoose.Schema({
     },
   },
   organsAndTissues: {
-    type: [String],
+    type: [mongoose.Schema.Types.Mixed],
     required: true,
   },
   consent: {
@@ -79,7 +79,7 @@ const recepientSchema = new mongoose.Schema({
     required: true,
   },
   date: {
-    type: Date,
+    type: String,
     required: true,
   },
   witnessDetail: {
@@ -87,7 +87,7 @@ const recepientSchema = new mongoose.Schema({
       type: String,
       required: true,
     },
-    recepientRelationship: {
+    recipientRelationship: {
       type: String,
       required: true,
     },
@@ -109,20 +109,28 @@ const recepientSchema = new mongoose.Schema({
     required:true,
   },
   photo: {
-    type: String,
-    default:
-      "https://i.pinimg.com/474x/0a/52/d5/0a52d5e52f7b81f96538d6b16ed5dc2b.jpg",
-    set: (v) =>
-      v === ""
-        ? "https://i.pinimg.com/474x/0a/52/d5/0a52d5e52f7b81f96538d6b16ed5dc2b.jpg"
-        : v,
+    filename:String,
+    url:String,
   },
   citizenship: {
-    type: String,
-    required: true,
+    filename:String,
+    url:String,
   },
-  confirmation: false,
+  hospitalDocs:{
+    filename:String,
+    url:String,
+  },
+  confirmation: {
+    type:Boolean,
+    required:true
+  },
+//   userId: {
+//     type: mongoose.Schema.Types.ObjectId,
+//     ref: 'User',
+//     required: true,
+//     unique: true // Ensures one donorDetail per user
+// },
 });
 
-const Recepient = mongoose.model("Recepient", recepientSchema);
-export default Recepient;
+const Recipient = mongoose.model("Recipient", recipientSchema);
+export default Recipient;

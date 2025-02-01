@@ -5,7 +5,7 @@ function RecepientRegister() {
   const [organsAndTissuesData, setOrgansAndTissuesData] = useState([]);
   const [otherOrganTissue, setOtherOrganTissue] = useState(false);
   const [otherOrgans, setOtherOrgans] = useState({otherOrganTissue:""});
-const [responseMessage, setResponseMessage] = useState("");
+  const [responseMessage, setResponseMessage] = useState("");
 
   let [recepientDetails, setRecepientDetails] = useState({
     fullName: "",
@@ -107,7 +107,7 @@ const [responseMessage, setResponseMessage] = useState("");
     // sending data to backend
     try {
       const response = await axios.post(
-        "http://localhost:4000/recepient-register", // Example API
+        "http://localhost:4000/recipient-register", // Example API
         recepientDetails,
         {
           headers: { "Content-Type": "multipart/form-data" },
@@ -157,48 +157,20 @@ const [responseMessage, setResponseMessage] = useState("");
               onChange={handleInputChange}
             />
           </div>
-          <div className="col-7 mb-5">
-            <label className="form-label">Gender *</label>
-            <div className="form-check">
-              <input
-                className="form-check-input border-dark"
-                type="radio"
-                id="male"
-                name="gender"
-                value="male"
-                onChange={handleInputChange}
-              />
-              <label className="form-check-label" htmlFor="male">
-                Male
-              </label>
-            </div>
-            <div className="form-check">
-              <input
-                className="form-check-input border-dark"
-                type="radio"
-                name="gender"
-                id="female"
-                value="female"
-                onChange={handleInputChange}
-              />
-              <label className="form-check-label" htmlFor="female">
-                Female
-              </label>
-            </div>
 
-            <div className="form-check">
-              <input
-                className="form-check-input border-dark"
-                type="radio"
-                name="gender"
-                id="other"
-                value="other"
-                onChange={handleInputChange}
-              />
-              <label className="form-check-label" htmlFor="other">
-                Other
-              </label>
-            </div>
+            <div className="mb-3 col-7">
+            <label className="form-label">Gender *</label>
+            <select
+              name="gender"
+              value={recepientDetails.gender}
+              onChange={handleInputChange}
+              className="form-select"
+            >
+              <option value="" disabled>Select Gender</option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+              <option value="other">Other</option>
+            </select>
           </div>
 
           <h3>Address</h3>
@@ -362,7 +334,7 @@ const [responseMessage, setResponseMessage] = useState("");
             <h4>I Want to receive *</h4>
             <div className="form-check">
               <div className="pt-2">
-                <p className="">Organs a Living Recepient Can Donate:</p>
+                <p className="">Organs a Living Recipient Can Donate:</p>
                 <div className="ms-4">
                   <input
                     className="form-check-input border-dark"
@@ -433,7 +405,7 @@ const [responseMessage, setResponseMessage] = useState("");
                   </label>
                 </div>
 
-                <p className="mt-3">Tissue a Living Recepient Can Donate:</p>
+                <p className="mt-3">Tissue a Living Recipient Can Donate:</p>
                 <div className="ms-4">
                   <input
                     className="form-check-input border-dark"
@@ -601,13 +573,13 @@ const [responseMessage, setResponseMessage] = useState("");
           </div>
           <h3>Signature*</h3>
           <div className="col-7 mb-3">
-            <label htmlFor="recepient-signature" className="form-label">
-              Recepient Signature *
+            <label htmlFor="recipient-signature" className="form-label">
+              Recipient Signature *
             </label>
             <input
               type="text"
               className="form-control border-dark"
-              id="recepient-signature"
+              id="recipient-signature"
               name="signature"
               value={recepientDetails.signature}
               onChange={handleInputChange}
@@ -647,13 +619,13 @@ const [responseMessage, setResponseMessage] = useState("");
             />
           </div>
           <div className="col-7 mb-3">
-            <label htmlFor="recepient-relationship" className="form-label">
-              Relationship to Recepient *
+            <label htmlFor="recipient-relationship" className="form-label">
+              Relationship to Recipient *
             </label>
             <input
               type="text"
               className="form-control border-dark"
-              id="recepient-relationship"
+              id="recipient-relationship"
               name="witnessDetail.recepientRelationship"
               value={recepientDetails.witnessDetail.recepientRelationship}
               onChange={handleInputChange}

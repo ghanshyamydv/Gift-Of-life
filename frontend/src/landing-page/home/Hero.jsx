@@ -16,7 +16,7 @@ function Hero() {
         </p>
 
         <p className="fs-5">18 people die every day waiting for a transplant.</p>
-        <div className="text-center mt-2"><Link className="custom-link fs-5 btn btn-success text-white fw-semibold" to="register-donor">Be a Hero-Register Now</Link></div>
+        <div className="text-center mt-2"><Link className="custom-link fs-5 btn btn-success text-white fw-semibold" to="/register-donor">Be a Hero-Register Now</Link></div>
       </div>
       
     </div>
