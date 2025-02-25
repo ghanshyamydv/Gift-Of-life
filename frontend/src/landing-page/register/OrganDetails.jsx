@@ -1,17 +1,9 @@
 import React, { useState } from "react";
 
-function OrganDetails({organsAndTissuesData, setOrgansAndTissuesData, otherOrgans, setOtherOrgans}) {
+function OrganDetails({ setFieldValue, handleChange, values, handleBlur }) {
   const [organInfo, setOrganInfo] = useState(false);
   const [otherOrganTissue, setOtherOrganTissue] = useState(false);
-  
-  const handleOrganAndTissue=(event)=>{
-      if(event.target.checked){
-        setOrgansAndTissuesData([...organsAndTissuesData,event.target.value])
-      }else{
-        setOrgansAndTissuesData([...organsAndTissuesData.filter((item)=>item!==event.target.value)])
-      }
-      
-  }
+
   return (
     <div className="ps-4 pt-3">
       <h4>Which organs and tissue would you like to donate?</h4>
@@ -36,8 +28,8 @@ function OrganDetails({organsAndTissuesData, setOrgansAndTissuesData, otherOrgan
           </p>
           <h5>Lungs</h5>
           <p>
-            Your lungs supply oxygen to your blood and clear carbon dioxide from
-            your body. Without healthy lungs you couldn’t breathe properly.
+            Your lungs supply oxygen to your blood and clear carboPon dioxide
+            from your body. Without healthy lungs you couldn’t breathe properly.
           </p>
           <h5>Kidneys</h5>
           <p>
@@ -140,9 +132,11 @@ function OrganDetails({organsAndTissuesData, setOrgansAndTissuesData, otherOrgan
         <input
           className="form-check-input border-dark"
           type="checkbox"
+          name="organsAndTissues.selectedOrgans"
           id="heart"
           value="heart"
-          onChange={handleOrganAndTissue}
+          onChange={handleChange}
+          checked={values.organsAndTissues.selectedOrgans?.includes("heart")}
         />
         <label className="form-check-label" htmlFor="heart">
           Heart
@@ -151,9 +145,11 @@ function OrganDetails({organsAndTissuesData, setOrgansAndTissuesData, otherOrgan
         <input
           className="form-check-input border-dark"
           type="checkbox"
+          name="organsAndTissues.selectedOrgans"
           id="lungs"
           value="lung"
-          onChange={handleOrganAndTissue}
+          onChange={handleChange}
+          checked={values.organsAndTissues.selectedOrgans?.includes("lung")}
         />
         <label className="form-check-label" htmlFor="lungs">
           Lung
@@ -163,8 +159,10 @@ function OrganDetails({organsAndTissuesData, setOrgansAndTissuesData, otherOrgan
           className="form-check-input border-dark"
           type="checkbox"
           id="kidneys"
+          name="organsAndTissues.selectedOrgans"
           value="kidney"
-          onChange={handleOrganAndTissue}
+          onChange={handleChange}
+          checked={values.organsAndTissues.selectedOrgans?.includes("kidney")}
         />
         <label className="form-check-label" htmlFor="kidneys">
           Kidneys
@@ -174,8 +172,10 @@ function OrganDetails({organsAndTissuesData, setOrgansAndTissuesData, otherOrgan
           className="form-check-input border-dark"
           type="checkbox"
           id="liver"
+          name="organsAndTissues.selectedOrgans"
           value="liver"
-          onChange={handleOrganAndTissue}
+          onChange={handleChange}
+          checked={values.organsAndTissues.selectedOrgans?.includes("liver")}
         />
         <label className="form-check-label" htmlFor="liver">
           Liver
@@ -185,8 +185,10 @@ function OrganDetails({organsAndTissuesData, setOrgansAndTissuesData, otherOrgan
           className="form-check-input border-dark"
           type="checkbox"
           id="pancreas"
+          name="organsAndTissues.selectedOrgans"
           value="pancreas"
-          onChange={handleOrganAndTissue}
+          onChange={handleChange}
+          checked={values.organsAndTissues.selectedOrgans?.includes("pancreas")}
         />
 
         <label className="form-check-label" htmlFor="pancreas">
@@ -198,22 +200,28 @@ function OrganDetails({organsAndTissuesData, setOrgansAndTissuesData, otherOrgan
           className="form-check-input border-dark"
           type="checkbox"
           id="small-intestine"
+          name="organsAndTissues.selectedOrgans"
           value="small-intestine"
-          onChange={handleOrganAndTissue}
+          onChange={handleChange}
+          checked={values.organsAndTissues.selectedOrgans?.includes(
+            "small-intestine"
+          )}
         />
         <label className="form-check-label" htmlFor="small-intestine">
           Small Intestine (bowel)
         </label>
       </div>
 
-      <h4 className="mt-3">Tissue a Living Donor Can Donate:</h4>
+      <p className="mt-3">Tissue a Living Recipient Can Donate:</p>
       <div className="ms-4">
         <input
           className="form-check-input border-dark"
           type="checkbox"
           id="tendons-ligaments"
+          name="organsAndTissues.selectedOrgans"
           value="tendons-ligaments"
-          onChange={handleOrganAndTissue}
+          onChange={handleChange}
+          checked={values.organsAndTissues.selectedOrgans?.includes("pancreas")}
         />
         <label className="form-check-label" htmlFor="tendons-ligaments">
           Tendons and Ligaments
@@ -223,8 +231,10 @@ function OrganDetails({organsAndTissuesData, setOrgansAndTissuesData, otherOrgan
           className="form-check-input border-dark"
           type="checkbox"
           id="corneas"
+          name="organsAndTissues.selectedOrgans"
           value="corneas"
-          onChange={handleOrganAndTissue}
+          onChange={handleChange}
+          checked={values.organsAndTissues.selectedOrgans?.includes("corneas")}
         />
         <label className="form-check-label" htmlFor="corneas">
           Corneas
@@ -234,8 +244,12 @@ function OrganDetails({organsAndTissuesData, setOrgansAndTissuesData, otherOrgan
           className="form-check-input border-dark"
           type="checkbox"
           id="amniotic-membrane"
+          name="organsAndTissues.selectedOrgans"
           value="amniotic-membrane"
-          onChange={handleOrganAndTissue}
+          onChange={handleChange}
+          checked={values.organsAndTissues.selectedOrgans?.includes(
+            "amniotic-membrane"
+          )}
         />
         <label className="form-check-label" htmlFor="amniotic-membrane">
           Amniotic Membrane
@@ -245,19 +259,39 @@ function OrganDetails({organsAndTissuesData, setOrgansAndTissuesData, otherOrgan
           className="form-check-input border-dark"
           type="checkbox"
           id="bone-marrow"
+          name="organsAndTissues.selectedOrgans"
           value="bone-marrow"
-          onChange={handleOrganAndTissue}
+          onChange={handleChange}
+          checked={values.organsAndTissues.selectedOrgans?.includes(
+            "bone-marrow"
+          )}
         />
         <label className="form-check-label" htmlFor="bone-marrow">
           Bone Marrow
         </label>
         <br />
-        <input className="form-check-input border-dark" type="checkbox" id="bone" value="bone" onChange={handleOrganAndTissue} />
+        <input
+          className="form-check-input border-dark"
+          type="checkbox"
+          id="bone"
+          name="organsAndTissues.selectedOrgans"
+          value="bone"
+          onChange={handleChange}
+          checked={values.organsAndTissues.selectedOrgans?.includes("bone")}
+        />
         <label className="form-check-label" htmlFor="bone">
           Bone
         </label>
         <br />
-        <input className="form-check-input border-dark" type="checkbox" id="skin" value="skin" onChange={handleOrganAndTissue}/>
+        <input
+          className="form-check-input border-dark"
+          type="checkbox"
+          id="skin"
+          name="organsAndTissues.selectedOrgans"
+          value="skin"
+          onChange={handleChange}
+          checked={values.organsAndTissues.selectedOrgans?.includes("skin")}
+        />
         <label className="form-check-label" htmlFor="skin">
           Skin
         </label>
@@ -266,8 +300,12 @@ function OrganDetails({organsAndTissuesData, setOrgansAndTissuesData, otherOrgan
           className="form-check-input border-dark"
           type="checkbox"
           id="blood-components"
+          name="organsAndTissues.selectedOrgans"
           value="blood-components"
-          onChange={handleOrganAndTissue}
+          onChange={handleChange}
+          checked={values.organsAndTissues.selectedOrgans?.includes(
+            "blood-components"
+          )}
         />
         <label className="form-check-label" htmlFor="blood-components">
           Blood Components
@@ -277,24 +315,39 @@ function OrganDetails({organsAndTissuesData, setOrgansAndTissuesData, otherOrgan
           className="form-check-input border-dark"
           type="checkbox"
           id="blood-stem-cells"
+          name="organsAndTissues.selectedOrgans"
           value="blood-stem-cells"
-          onChange={handleOrganAndTissue}
+          onChange={handleChange}
+          checked={values.organsAndTissues.selectedOrgans?.includes(
+            "blood-stem-cells"
+          )}
         />
         <label className="form-check-label" htmlFor="blood-stem-cells">
           Peripheral Blood Stem Cells
-        </label><br />
+        </label>
+        <br />
         <input
           className="form-check-input border-dark"
           type="checkbox"
           id="other-organ-tissue"
-          onChange={()=>{setOtherOrganTissue(!otherOrganTissue)}}
+          onChange={() => {
+            setOtherOrganTissue(!otherOrganTissue);
+            setFieldValue("organsAndTissues.otherOrganTissue", "");
+          }}
         />
         <label className="form-check-label" htmlFor="other-organ-tissue">
           Other Organ or Tissue (please specify)
         </label>
-        {otherOrganTissue && <input type="text" className="form-control border-dark" name="other-organ-tissue" value={otherOrgans.otherOrganTissue}
-                      onChange={(event)=>{setOtherOrgans({otherOrganTissue:event.target.value})}}/>}
-
+        {otherOrganTissue && (
+          <input
+            type="text"
+            name="organsAndTissues.otherOrganTissue"
+            value={values.organsAndTissues.otherOrganTissue}  // Bind value to Formik state
+            onChange={handleChange}
+            onBlur={handleBlur}
+          />
+        )}
+        
       </div>
     </div>
   );

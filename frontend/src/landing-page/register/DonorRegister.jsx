@@ -1,6 +1,52 @@
 import React, { useState } from "react";
 import OrganDetails from "./OrganDetails";
 import axios from "axios";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import validateDonorSchema from "../../../public/js/validateDonor";
+let donorDetails = {
+  fullName: "",
+  dateOfBirth: "",
+  gender: "",
+  address: {
+    street: "",
+    city: "",
+    state: "",
+    zipCode: "",
+    country: "",
+  },
+  email: "",
+  phoneNumber: "",
+  emergencyContact: {
+    name: "",
+    donorRelationship: "",
+    email: "",
+    phoneNumber: "",
+  },
+  organsAndTissues: {
+    selectedOrgans: [],
+    otherOrganTissue: "",
+  },
+  consent: false,
+  signature: "",
+  date: "",
+  witnessDetail: {
+    name: "",
+    donorRelationship: "",
+    signature: "",
+  },
+  medicalPractitioner: {
+    name: "",
+    role: "",
+    signature: "",
+  },
+  religious: "",
+  conditions: "",
+  donationAmount: null,
+  photo: null,
+  citizenship: null,
+  confirmation: false,
+};
 
 function DonorRegister() {
   const [moneyInput, setMoneyInput] = useState(false);
@@ -8,145 +54,44 @@ function DonorRegister() {
 
   const [responseMessage, setResponseMessage] = useState("");
 
-  let [donorDetails, setDonorDetails] = useState({
-    fullName: "",
-    dateOfBirth: "",
-    gender: "",
-    email: "",
-    phoneNumber: "",
-    consent:false,
-    signature: "",
-    date: "",
-    religious: "",
-    conditions: "",
-    notes: "",
-    donationAmount:0,
-    confirmation:false
-  });
-
-
-  let [address,setAddress]=useState({
-    street: "",
-    city: "",
-    state: "",
-    zipCode: "",
-    country: "",
-  });
-
-  let [emergencyContact, setEmergencyContact]=useState({
-    name: "",
-    donorRelationship: "",
-    email: "",
-    phoneNumber: "",
-  });
-
-  let [witnessDetail, setWitnessDetail]=useState({
-    name: "",
-    donorRelationship: "",
-    signature: "",
-  });
-
-  let [medicalPractitioner, setMedicalPractitioner]=useState({
-    name: "",
-    role: "",
-    signature: "",
-  });
-
-  const [organsAndTissuesData, setOrgansAndTissuesData]=useState([]);
-  const [otherOrgans, setOtherOrgans] = useState({otherOrganTissue:""});
-  const [photo, setPhoto]=useState(null);
-  const [citizenship, setCitizenship]=useState(null);
-  const handleDonorInputChange = (event) => {
-    const { name, value, type, checked} = event.target;
-  //   // If the field is a checkbox, we use checked value
-    const updatedValue = type === "checkbox" ? checked : value;
-
-    setDonorDetails((prevDetails) => {
-              return {
-              ...prevDetails,
-              [name]: updatedValue
-              };
-    });
-  };
-
-
-  const handleAddressInputChange = (event) => {
-    const { name, value} = event.target;
-    setAddress((prevDetails) => {
-              return {
-              ...prevDetails,
-              [name]: value
-              };
-    });
-  };
-
-  const handleEmergencyContactInputChange= (event) => {
-    const { name, value} = event.target;
-    setEmergencyContact((prevDetails) => {
-              return {
-              ...prevDetails,
-              [name]: value
-              };
-    });
-  };
-
-  const handlewitnessDetailInputChange =(event) => {
-    const { name, value} = event.target;
-    setWitnessDetail((prevDetails) => {
-              return {
-              ...prevDetails,
-              [name]: value
-              };
-    });
-  };
-
-  const handleMedicalPractitionerInputChange =(event) => {
-    const { name, value} = event.target;
-    setMedicalPractitioner((prevDetails) => {
-              return {
-              ...prevDetails,
-              [name]: value
-              };
-    });
-  };
-
-  const handleSubmit = async (event)=>{
-    event.preventDefault();
-
-      let organsAndTissues=[];
-      if(!someOrgan){
-        organsAndTissues=["all organs and tissue after death"]
-      }else{
-        organsAndTissues=[...organsAndTissuesData,otherOrgans]
-      }
-
-    const formData = new FormData();
-    
-    // Append non-file data as JSON strings
-    formData.append("donorDetails", JSON.stringify(donorDetails));
-    formData.append("address", JSON.stringify(address));
-    formData.append("emergencyContact", JSON.stringify(emergencyContact));
-    formData.append("witnessDetail", JSON.stringify(witnessDetail));
-    formData.append("medicalPractitioner", JSON.stringify(medicalPractitioner));
-    formData.append("organsAndTissues", JSON.stringify(organsAndTissues));
-    formData.append("photo",photo);
-    formData.append("citizenship",citizenship);
-
-    // sending data to backend
-    try {
-      const response = await axios.post(
-        "http://localhost:4000/donor-register", // Example API
-        formData,
-        {
-          headers:{"Content-type": "multipart/form-data"},
+  //------------------------------formik config -----------------------------------
+  const {
+    values,
+    touched,
+    errors,
+    handleBlur,
+    handleChange,
+    handleSubmit,
+    setFieldValue,
+  } = useFormik({
+    initialValues: donorDetails,
+    validationSchema: validateDonorSchema,
+    onSubmit: async (values, actions) => {
+      console.log(values);
+      
+      // Sending data to backend
+      try {
+        const response = await axios.post(
+          "http://localhost:4000/donor-register",
+          values,
+          {
+            headers: { "Content-Type": "multipart/form-data" },
+          }
+        );
+        setResponseMessage(
+          "Data submitted successfully: " + JSON.stringify(response.data)
+        );
+        if (response.status === 200) {
+          // Reset the form data
+          actions.resetForm();
+        } else {
+          console.error("Failed to submit data");
         }
-      );
-      setResponseMessage("Data submitted successfully: " + JSON.stringify(response.data));
-    } catch (err) {
-      setResponseMessage("Error: " + err.message);
-    }
-    
-  }
+      } catch (err) {
+        setResponseMessage("Error: " + err.message);
+      }
+    },
+  });
 
   return (
     <div className="container">
@@ -157,7 +102,7 @@ function DonorRegister() {
       </p>
       <h3>Personal Information</h3>
       <hr />
-      <form action="" onSubmit={handleSubmit} >
+      <form action="" onSubmit={handleSubmit}>
         <div className="row">
           <div className="col-7 mb-3">
             <label htmlFor="full-name" className="form-label">
@@ -168,9 +113,13 @@ function DonorRegister() {
               className="form-control border-dark"
               id="full-name"
               name="fullName"
-              value={donorDetails.fullName}
-              onChange={handleDonorInputChange}
+              value={values.fullName}
+              onChange={handleChange}
+              onBlur={handleBlur}
             />
+            {errors.fullName && touched.fullName ? (
+              <div className="text-danger">{errors.fullName}</div>
+            ) : null}
           </div>
           <div className="col-7 mb-3">
             <label htmlFor="birth-date" className="form-label">
@@ -181,24 +130,34 @@ function DonorRegister() {
               className="form-control border-dark"
               id="birth-date"
               name="dateOfBirth"
-              value={donorDetails.dateOfBirth}
-              onChange={handleDonorInputChange}
+              value={values.dateOfBirth}
+              onChange={handleChange}
+              onBlur={handleBlur}
             />
+            {errors.dateOfBirth && touched.dateOfBirth ? (
+              <div className="text-danger">{errors.dateOfBirth}</div>
+            ) : null}
           </div>
-  
+
           <div className="mb-3 col-7">
             <label className="form-label">Gender *</label>
             <select
               name="gender"
-              value={donorDetails.gender}
-              onChange={handleDonorInputChange}
+              value={values.gender}
+              onChange={handleChange}
+              onBlur={handleBlur}
               className="form-select"
             >
-              <option value="" disabled>Select Gender</option>
+              <option value="" disabled>
+                Select Gender
+              </option>
               <option value="male">Male</option>
               <option value="female">Female</option>
               <option value="other">Other</option>
             </select>
+            {errors.gender && touched.gender ? (
+              <div className="text-danger">{errors.gender}</div>
+            ) : null}
           </div>
 
           <h3>Address</h3>
@@ -210,10 +169,14 @@ function DonorRegister() {
               type="text"
               className="form-control border-dark"
               id="street"
-              name="street"
-              value={address.street}
-              onChange={handleAddressInputChange}
+              name="address.street"
+              value={values.address.street}
+              onChange={handleChange}
+              onBlur={handleBlur}
             />
+            {errors.address?.street && touched.address?.street ? (
+              <div className="text-danger">{errors.address.street}</div>
+            ) : null}
           </div>
           <div className="col-7 mb-3">
             <label htmlFor="city" className="form-label">
@@ -223,10 +186,14 @@ function DonorRegister() {
               type="text"
               className="form-control border-dark"
               id="city"
-              name="city"
-              value={address.city}
-              onChange={handleAddressInputChange}
+              name="address.city"
+              value={values.address.city}
+              onChange={handleChange}
+              onBlur={handleBlur}
             />
+            {errors.address?.city && touched.address?.city ? (
+              <div className="text-danger">{errors.address.city}</div>
+            ) : null}
           </div>
           <div className="col-7 mb-3">
             <label htmlFor="state/province" className="form-label">
@@ -236,10 +203,14 @@ function DonorRegister() {
               type="text"
               className="form-control border-dark"
               id="state/province"
-              name="state"
-              value={address.state}
-              onChange={handleAddressInputChange}
+              name="address.state"
+              value={values.address.state}
+              onChange={handleChange}
+              onBlur={handleBlur}
             />
+            {errors.address?.state && touched.address?.state ? (
+              <div className="text-danger">{errors.address.state}</div>
+            ) : null}
           </div>
           <div className="col-7 mb-3">
             <label htmlFor=" zip/postal-code" className="form-label">
@@ -250,10 +221,14 @@ function DonorRegister() {
               type="text"
               className="form-control border-dark"
               id="zip/postal-code"
-              name="zipCode"
-              value={address.zipCode}
-              onChange={handleAddressInputChange}
+              name="address.zipCode"
+              value={values.address.zipCode}
+              onChange={handleChange}
+              onBlur={handleBlur}
             />
+            {errors.address?.zipCode && touched.address?.zipCode ? (
+              <div className="text-danger">{errors.address.zipCode}</div>
+            ) : null}
           </div>
 
           <div className="col-7 mb-3">
@@ -264,10 +239,14 @@ function DonorRegister() {
               type="text"
               className="form-control border-dark"
               id="country"
-              name="country"
-              value={address.country}
-              onChange={handleAddressInputChange}
+              name="address.country"
+              value={values.country}
+              onChange={handleChange}
+              onBlur={handleBlur}
             />
+            {errors.address?.country && touched.address?.country ? (
+              <div className="text-danger">{errors.address.country}</div>
+            ) : null}
           </div>
 
           <h3>Your Contact Details</h3>
@@ -282,9 +261,13 @@ function DonorRegister() {
               id="email"
               name="email"
               placeholder="name@example.com"
-              value={donorDetails.email}
-              onChange={handleDonorInputChange}
+              value={values.email}
+              onChange={handleChange}
+              onBlur={handleBlur}
             />
+            {errors.email && touched.email ? (
+              <div className="text-danger">{errors.email}</div>
+            ) : null}
           </div>
           <div className="mb-3 col-7">
             <label htmlFor="mobile-number" className="form-label">
@@ -295,9 +278,13 @@ function DonorRegister() {
               className="form-control border-dark"
               id="mobile-number"
               name="phoneNumber"
-              value={donorDetails.phoneNumber}
-              onChange={handleDonorInputChange}
+              value={values.phoneNumber}
+              onChange={handleChange}
+              onBlur={handleBlur}
             />
+            {errors.phoneNumber && touched.phoneNumber ? (
+              <div className="text-danger">{errors.phoneNumber}</div>
+            ) : null}
           </div>
 
           <h3>Emergency Contact Details</h3>
@@ -310,10 +297,14 @@ function DonorRegister() {
               type="text"
               className="form-control border-dark"
               id="emergency-full-name"
-              name="name"
-              value={emergencyContact.name}
-              onChange={handleEmergencyContactInputChange}
+              name="emergencyContact.name"
+              value={values.emergencyContact.name}
+              onChange={handleChange}
+              onBlur={handleBlur}
             />
+            {errors.emergencyContact?.name && touched.emergencyContact?.name ? (
+              <div className="text-danger">{errors.emergencyContact.name}</div>
+            ) : null}
           </div>
           <div className="col-7 mb-3">
             <label htmlFor="relationship" className="form-label">
@@ -323,10 +314,17 @@ function DonorRegister() {
               type="text"
               className="form-control border-dark"
               id="relationship"
-              name="donorRelationship"
-              value={emergencyContact.donorRelationship}
-              onChange={handleEmergencyContactInputChange}
+              name="emergencyContact.donorRelationship"
+              value={values.emergencyContact.donorRelationship}
+              onChange={handleChange}
+              onBlur={handleBlur}
             />
+            {errors.emergencyContact?.donorRelationship &&
+            touched.emergencyContact?.donorRelationship ? (
+              <div className="text-danger">
+                {errors.emergencyContact.donorRelationship}
+              </div>
+            ) : null}
           </div>
           <div className="mb-3 col-7">
             <label htmlFor="emergency-email" className="form-label">
@@ -337,10 +335,15 @@ function DonorRegister() {
               className="form-control border-dark"
               id="emergency-email"
               placeholder="name@example.com"
-              name="email"
-              value={emergencyContact.email}
-              onChange={handleEmergencyContactInputChange}
+              name="emergencyContact.email"
+              value={values.emergencyContact.email}
+              onChange={handleChange}
+              onBlur={handleBlur}
             />
+            {errors.emergencyContact?.email &&
+            touched.emergencyContact?.email ? (
+              <div className="text-danger">{errors.emergencyContact.email}</div>
+            ) : null}
           </div>
           <div className="mb-3 col-7">
             <label htmlFor="emergency-mobile-number" className="form-label">
@@ -350,10 +353,17 @@ function DonorRegister() {
               type="number"
               className="form-control border-dark"
               id="emergency-mobile-number"
-              name="phoneNumber"
-              value={emergencyContact.phoneNumber}
-              onChange={handleEmergencyContactInputChange}
+              name="emergencyContact.phoneNumber"
+              value={values.emergencyContact.phoneNumber}
+              onChange={handleChange}
+              onBlur={handleBlur}
             />
+            {errors.emergencyContact?.phoneNumber &&
+            touched.emergencyContact?.phoneNumber ? (
+              <div className="text-danger">
+                {errors.emergencyContact.phoneNumber}
+              </div>
+            ) : null}
           </div>
 
           <h3>Donation Preferences </h3>
@@ -369,6 +379,9 @@ function DonorRegister() {
                 id="all-organ"
                 onClick={() => {
                   setSomeOrgan(false);
+                  setFieldValue("organsAndTissues.selectedOrgans", [
+                    "all organs and tissues after my death",
+                  ]);
                 }}
               />
               <label className="form-check-label" htmlFor="all-organ">
@@ -381,9 +394,9 @@ function DonorRegister() {
                 type="radio"
                 name="organsAndTissues"
                 id="some-organ"
-                value=""
                 onClick={() => {
-                  setSomeOrgan(true); 
+                  setSomeOrgan(true);
+                  setFieldValue("organsAndTissues.selectedOrgans", []);
                 }}
               />
               <label className="form-check-label" htmlFor="some-organ">
@@ -391,7 +404,17 @@ function DonorRegister() {
                 (select all that apply):
               </label>
               <br />
-              {someOrgan && <OrganDetails organsAndTissuesData={organsAndTissuesData} setOrgansAndTissuesData={setOrgansAndTissuesData} otherOrgans={otherOrgans} setOtherOrgans={setOtherOrgans}/>}
+              {someOrgan && (
+                <OrganDetails
+                  setFieldValue={setFieldValue}
+                  handleChange={handleChange}
+                  values={values}
+                  handleBlur={handleBlur}
+                />
+              )}
+              {errors.organsAndTissues && touched.organsAndTissues ? (
+                <div className="text-danger">{errors.organsAndTissues}</div>
+              ) : null}
             </div>
           </div>
           <h3>Consent Declaration *</h3>
@@ -402,13 +425,14 @@ function DonorRegister() {
               type="checkbox"
               id="consent"
               name="consent"
-              checked={donorDetails.consent}
-              onChange={handleDonorInputChange}
+              onChange={handleChange}
+              checked={values.consent}
+              onBlur={handleBlur}
             />
             <label className="form-check-label" htmlFor="consent">
               By filling this form, I declare that:
             </label>
-            {donorDetails.consent && (
+            {values.consent && (
               <ul>
                 <li>
                   I am of sound mind and voluntarily wish to donate my organs
@@ -431,6 +455,9 @@ function DonorRegister() {
                 </li>
               </ul>
             )}
+            {errors.consent && touched.consent ? (
+            <div className="text-danger">{errors.consent}</div>
+          ) : null}
           </div>
           <h3>Signature*</h3>
           <div className="col-7 mb-3">
@@ -442,9 +469,13 @@ function DonorRegister() {
               className="form-control border-dark"
               id="donor-signature"
               name="signature"
-              value={donorDetails.signature}
-              onChange={handleDonorInputChange}
+              value={values.signature}
+              onChange={handleChange}
+              onBlur={handleBlur}
             />
+            {errors.signature && touched.signature ? (
+            <div className="text-danger">{errors.signature}</div>
+          ) : null}
           </div>
           <div className="col-7 mb-3">
             <label htmlFor="registeration-date" className="form-label">
@@ -455,9 +486,13 @@ function DonorRegister() {
               className="form-control border-dark"
               id="registeration-date"
               name="date"
-              value={donorDetails.date}
-              onChange={handleDonorInputChange}
+              value={values.date}
+              onChange={handleChange}
+              onBlur={handleBlur}
             />
+            {errors.date && touched.date ? (
+            <div className="text-danger">{errors.date}</div>
+          ) : null}
           </div>
 
           <h3>Witness/Authorized Representative *</h3>
@@ -474,10 +509,14 @@ function DonorRegister() {
               type="text"
               className="form-control border-dark"
               id="emergency-full-name"
-              name="name"
-              value={witnessDetail.name}
-              onChange={handlewitnessDetailInputChange}
+              name="witnessDetail.name"
+              value={values.witnessDetail.name}
+              onChange={handleChange}
+              onBlur={handleBlur}
             />
+             {errors.witnessDetail?.name && touched.witnessDetail?.name ? (
+            <div className="text-danger">{errors.witnessDetail?.name}</div>
+          ) : null}
           </div>
           <div className="col-7 mb-3">
             <label htmlFor="donor-relationship" className="form-label">
@@ -487,10 +526,14 @@ function DonorRegister() {
               type="text"
               className="form-control border-dark"
               id="donor-relationship"
-              name="donorRelationship"
-              value={witnessDetail.donorRelationship}
-              onChange={handlewitnessDetailInputChange}
+              name="witnessDetail.donorRelationship"
+              value={values.witnessDetail.donorRelationship}
+              onChange={handleChange}
+              onBlur={handleBlur}
             />
+            {errors.witnessDetail?.donorRelationship && touched.witnessDetail?.donorRelationship ? (
+            <div className="text-danger">{errors.witnessDetail?.donorRelationship}</div>
+          ) : null}
           </div>
           <div className="col-7 mb-3">
             <label htmlFor="witness-signature" className="form-label">
@@ -500,10 +543,14 @@ function DonorRegister() {
               type="text"
               className="form-control border-dark"
               id="witness-signature"
-              name="signature"
-              value={witnessDetail.signature}
-              onChange={handlewitnessDetailInputChange}
+              name="witnessDetail.signature"
+              value={values.witnessDetail.signature}
+              onChange={handleChange}
+              onBlur={handleBlur}
             />
+            {errors.witnessDetail?.signature && touched.witnessDetail?.signature ? (
+            <div className="text-danger">{errors.witnessDetail?.signature}</div>
+          ) : null}
           </div>
 
           <h3>Medical Practitioner/Organization Confirmation (Optional)</h3>
@@ -519,9 +566,10 @@ function DonorRegister() {
               type="text"
               className="form-control border-dark"
               id="emergency-full-name"
-              name="name"
-              value={medicalPractitioner.name}
-              onChange={handleMedicalPractitionerInputChange}
+              name="medicalPractitioner.name"
+              value={values.medicalPractitioner.name}
+              onChange={handleChange}
+              onBlur={handleBlur}
             />
           </div>
           <div className="col-7 mb-3">
@@ -532,9 +580,10 @@ function DonorRegister() {
               type="text"
               className="form-control border-dark"
               id="practitioner-role"
-              name="role"
-              value={medicalPractitioner.role}
-              onChange={handleMedicalPractitionerInputChange}
+              name="medicalPractitioner.role"
+              value={values.medicalPractitioner.role}
+              onChange={handleChange}
+              onBlur={handleBlur}
             />
           </div>
           <div className="col-7 mb-3">
@@ -545,9 +594,10 @@ function DonorRegister() {
               type="text"
               className="form-control border-dark"
               id="practitioner-signature"
-              name="signature"
-              value={medicalPractitioner.signature}
-              onChange={handleMedicalPractitionerInputChange}
+              name="medicalPractitioner.signature"
+              value={values.medicalPractitioner.signature}
+              onChange={handleChange}
+              onBlur={handleBlur}
             />
           </div>
 
@@ -561,8 +611,9 @@ function DonorRegister() {
               className="form-control border-dark"
               id="relegion"
               name="religious"
-              value={donorDetails.religious}
-              onChange={handleDonorInputChange}
+              value={values.religious}
+              onChange={handleChange}
+              onBlur={handleBlur}
             />
             <br />
             <label htmlFor="conditions" className="form-label">
@@ -573,8 +624,9 @@ function DonorRegister() {
               className="form-control border-dark"
               id="conditions"
               name="conditions"
-              value={donorDetails.conditions}
-              onChange={handleDonorInputChange}
+              value={values.conditions}
+              onChange={handleChange}
+              onBlur={handleBlur}
             />
             <br />
             <label htmlFor="notes" className="form-label">
@@ -585,8 +637,9 @@ function DonorRegister() {
               className="form-control border-dark"
               id="notes"
               name="notes"
-              value={donorDetails.notes}
-              onChange={handleDonorInputChange}
+              value={values.notes}
+              onChange={handleChange}
+              onBlur={handleBlur}
             />
           </div>
 
@@ -599,7 +652,7 @@ function DonorRegister() {
                 id="for-free"
                 name="donationAmount"
                 value={0}
-                onChange={handleDonorInputChange}
+                onChange={handleChange}
                 onClick={() => {
                   setMoneyInput(false);
                 }}
@@ -615,7 +668,7 @@ function DonorRegister() {
                 id="for-money"
                 name="donationAmount"
                 value={0}
-                onChange={handleDonorInputChange}
+                onChange={handleChange}
                 onClick={() => {
                   setMoneyInput(true);
                 }}
@@ -629,20 +682,30 @@ function DonorRegister() {
                   type="number"
                   min="0"
                   name="donationAmount"
+                  values={values.donationAmount}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
                   placeholder="Enter your amount here.."
-                  value={donorDetails.donationAmount}
-                  onChange={handleDonorInputChange}
                 />
               )}
+              {errors.donationAmount && touched.donationAmount ? (
+            <div className="text-danger">{errors.donationAmount}</div>
+          ) : null}
             </div>
             <div className="col-7 mb-3">
               <h3 className="mt-3">Upload your passport photo</h3>
               <label className="form-label">Upload your photo *</label>
               <br />
-              <input type="file" 
-              name="photo"
-              onChange={(event)=>{setPhoto(event.target.files[0])}}
+              <input
+                type="file"
+                name="photo"
+                onChange={(event) => {
+                  setFieldValue("photo", event.currentTarget.files[0]);
+                }}
               />
+              {errors.photo && touched.photo ? (
+            <div className="text-danger">{errors.photo}</div>
+          ) : null}
               <br />
 
               <h3 className="mt-3">Upload your Citizenship</h3>
@@ -650,10 +713,16 @@ function DonorRegister() {
                 Upload your citizenship in .pdf form
               </label>
               <br />
-              <input type="file" 
-              name="citizenship"
-              onChange={(event)=>{setCitizenship(event.target.files[0])}}
+              <input
+                type="file"
+                name="citizenship"
+                onChange={(event) => {
+                  setFieldValue("citizenship", event.currentTarget.files[0]);
+                }}
               />
+              {errors.citizenship && touched.citizenship ? (
+            <div className="text-danger">{errors.citizenship}</div>
+          ) : null}
               <br />
             </div>
           </div>
@@ -665,16 +734,21 @@ function DonorRegister() {
               type="checkbox"
               id="confirm"
               name="confirmation"
-            checked={donorDetails.confirmation}
-            onChange={handleDonorInputChange}
+              checked={values.confirmation}
+              onChange={handleChange}
+              onBlur={handleBlur}
             />
             <label className="form-check-label" htmlFor="confirm">
               I have read the privacy statement and give consent for the use of
               my information in accordance with the terms
             </label>
+            {errors.confirmation && touched.confirmation ? (
+              <div className="text-danger">{errors.confirmation}</div>
+            ) : null}
           </div>
           <button
             className="btn btn-success fs-5 mt-4 mb-5"
+            type="submit"
             style={{ width: "300px" }}
           >
             Submit-Yes, I want to donate

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import axios from "axios";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -13,11 +13,12 @@ const loginData = {
 function Login() {
   const [showPass, setShowPass] = useState(false);
   const [responseMessage, setResponseMessage] = useState("");
+  const navigate= useNavigate();
 
   // validation schema-------------------------
   const validationSchema = Yup.object({
     username: Yup.string()
-      .min(2, "Minimum 2 character is required")
+      .min(3, "Minimum 3 character is required")
       .required("Username is required"),
     password: Yup.string().required("Password is required"),
   });
@@ -35,6 +36,15 @@ function Login() {
             "http://localhost:4000/login",
             values
           );
+          console.log(response.data.redirectTo);
+          
+          if(response.data.success){
+            navigate(response.data.redirectTo);
+          }else{
+            window.location.reload();
+            navigate(response.data.redirectTo);
+            
+          } 
           setResponseMessage(
             "Data submitted successfully: " + JSON.stringify(response.data)
           );

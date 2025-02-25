@@ -18,7 +18,7 @@ function Signup() {
 
     // validation schema-------------------------
     const validationSchema=Yup.object({
-      username:Yup.string().min(2, "Minimum 2 character is required").required("Username is required"),
+      username:Yup.string().min(2, "Minimum 3 character is required").max(16, "Maximum 16 character is supported").required("Username is required"),
       email:Yup.string().required("Email is required").email("Invalid email Format"),
       password: Yup.string()
           .required("Password is required")
