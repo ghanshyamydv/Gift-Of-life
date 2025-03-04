@@ -17,7 +17,9 @@ import Story from './landing-page/recipient-story/Story';
 import Login from './landing-page/login/Login';
 import Signup from './landing-page/login/Signup';
 import AdminPage from './admin/AdminPage';
-
+import {AuthProvider} from "./AuthProvider";
+import ResetPassword from './landing-page/login/ResetPassword';
+import SetNewPassword from "./landing-page/login/SetNewPassword";
 
 const AppRoutes = () => {
   const location = useLocation();
@@ -25,10 +27,11 @@ const AppRoutes = () => {
   // Check if the URL starts with "/admin"
   const isAdminRoute = location.pathname.startsWith("/admin");
 
-  return isAdminRoute ? (
-    <AdminPage/> // Render only the admin dashboard for all "/admin" routes
-  ) : (
-    <>
+  if (isAdminRoute) {
+    return <AdminPage />; // Render only the admin dashboard without AuthProvider
+  }
+  return(
+    <AuthProvider>
       <Navbar />
       <Routes>
         <Route path="/" element={<HomePage />} />
@@ -42,10 +45,12 @@ const AppRoutes = () => {
         <Route path="/register-recipient" element={<RecipientRegister />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/forgot-password" element={<ResetPassword />} />
+        <Route path="/set-newpassword" element={<SetNewPassword />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
       <Footer />
-    </>
+    </AuthProvider>
   );
 };
 

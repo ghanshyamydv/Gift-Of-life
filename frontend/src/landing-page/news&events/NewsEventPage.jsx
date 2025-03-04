@@ -1,38 +1,40 @@
-import React from 'react'
+import React ,{useState, useEffect} from 'react'
+import axios from 'axios';
 import "./NewsEvent.css"
 import { Link } from 'react-router-dom'
 function NewsEventPage() {
+  const [newsAndEvents, setNewsAndEvents] = useState([]);
+  // Fetch data from the server
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const resNewsandeventsData = await axios.get("http://localhost:4000/admin/newsandevents");
+        setNewsAndEvents(resNewsandeventsData.data.newsAndEvents);
+      } catch (err) {
+        console.log("error :", err);
+      }
+    };
+    fetchData();
+  }, []); // Add refreshData as a dependency
   return (
     <div className='container'>
       <h1>News and Events</h1>
-      <div className="row d-flex justify-content-between">
-        <Link to={"/news-event/event"} className="col-xs-12 col-sm-12 col-md-5 col-lg card bg-primary-subtle m-3 p-3 hover-event">
+      <div className="row">
+
+        {newsAndEvents.slice().reverse().map((newsOrEvent) => (
+          <div key={newsOrEvent._id} className='col-xs-12 col-sm-12 col-md-6 col-lg-4'>
+          <Link to={"/news-event/event"} className={`card ${newsOrEvent.category==="news"?"bg-secondary-subtle hover-news":"bg-primary-subtle hover-event"} m-2 p-3`}>
           <div className="d-flex justify-content-between">
-          <span className='text-primary fw-semibold'>12 Feb 2025</span>
-          <span className='border rounded-pill border-primary ps-3 pe-3 pt-1 pb-1 fw-semibold text-primary hover-style'>Event</span>
+          <span className='text-primary fw-semibold'>{newsOrEvent.date}</span>
+          <span className='border rounded-pill border-primary ps-3 pe-3 pt-1 pb-1 fw-semibold text-primary hover-style'>{newsOrEvent.category}</span>
           </div>
-          <h3 className='mt-3 custom-fw' >SA Run for Hope 2024 - by 2nd Beat</h3>
-          <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Perferendis, facilis Lorem ipsum dolor sit, amet consectetur adipisicing elit. Perferendis, facilis.</p>
-          <p>Read more  &gt;</p>
+          <h3 className='mt-3 custom-fw' >{newsOrEvent.title}</h3>
+          <p>{newsOrEvent.description.slice(0,150)}{(newsOrEvent.description.length>40)&&<span>...</span>}</p>
+          {(newsOrEvent.description.length>40) && <p>Read more &gt;</p> }
+          {/* <p>Read more  &gt;</p> */}
         </Link>
-        <Link to={"/news-event/event"} className="col-xs-12 col-sm-12 col-md-5 col-lg card bg-secondary-subtle m-3 p-3 hover-news">
-          <div className="d-flex justify-content-between">
-          <span className='text-primary fw-semibold'>12 Feb 2025</span>
-          <span className='border rounded-pill border-primary ps-3 pe-3 pt-1 pb-1 fw-semibold text-primary hover-style'>News</span>
           </div>
-          <h3 className='mt-3 custom-fw' >SA Run for Hope 2024 - by 2nd Beat</h3>
-          <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Perferendis, facilis Lorem ipsum dolor sit, amet consectetur adipisicing elit. Perferendis, facilis.</p>
-          <p>Read more  &gt;</p>
-        </Link>
-        <Link to={"/news-event/event"} className="col-xs-12 col-sm-12 col-md-5 col-lg card bg-primary-subtle m-3 p-3 hover-event">
-          <div className="d-flex justify-content-between">
-          <span className='text-primary fw-semibold'>12 Feb 2025</span>
-          <span className='border rounded-pill border-primary ps-3 pe-3 pt-1 pb-1 fw-semibold text-primary hover-style'>Event</span>
-          </div>
-          <h3 className='mt-3 custom-fw' >SA Run for Hope 2024 - by 2nd Beat</h3>
-          <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Perferendis, facilis Lorem ipsum dolor sit, amet consectetur adipisicing elit. Perferendis, facilis.</p>
-          <p>Read more  &gt;</p>
-        </Link>
+        ))}
       </div>
     </div>
   )

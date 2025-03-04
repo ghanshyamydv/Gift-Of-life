@@ -6,38 +6,42 @@ import cors from "cors";
 import Donor from "./models/donor.model.js";
 import Recepient from "./models/recipient.model.js";
 import User from "./models/user.model.js"
+import NewsEvent from "./models/newsevent.model.js";
 import multer from "multer";
 import { storage } from "./cloudinary.js";
-import session from "express-session";
-import MongoStore from "connect-mongo";
+import expressError from "./utils/expressError.js"
+// import session from "express-session";
+// import MongoStore from "connect-mongo";
 import passport from "./passportConfig.js";
 import { compareSync } from "bcrypt";
 import jwt from "jsonwebtoken";
+import sendMail from "./sendMail.js";
+import bcrypt from "bcrypt";
 const app = express();
 
 //middlewares----------------------------
 app.use(cors());
 app.use(express.json());
-app.use(session({
-  secret: 'keyboard cat',
-  resave: false,
-  saveUninitialized: true,
-  store:MongoStore.create({mongoUrl:'mongodb://localhost:27017/GiftOfLife', collectionName:"sessions"}),
-  cookie: { 
-    maxAge:1000*60*60*24 
-  }
-}))
+
+// app.use(session({
+//   secret: 'keyboard cat',
+//   resave: false,
+//   saveUninitialized: true,
+//   store:MongoStore.create({mongoUrl:'mongodb://localhost:27017/GiftOfLife', collectionName:"sessions"}),
+//   cookie: { 
+//     maxAge:1000*60*60*24 
+//   }
+// }))
 
 // Initialize Passport Middleware
 app.use(passport.initialize());
-app.use(passport.session());
+// app.use(passport.session());
 
-app.use(express.urlencoded({ extended: true }));
 //database connection----------------------------
 // const atlasdbURL = process.env.ATLASDB_URL;
 const atlasdbURL = "mongodb://localhost:27017/GiftOfLife";
 db()
-  .then((res) => console.log("connection sucessful"))
+  .then((res) => console.log("Database connection sucessful"))
   .catch((err) => console.log(err));
 
 async function db() {
@@ -125,6 +129,7 @@ app.post("/signup", async (req, res) =>{
     try{
         const newUser = new User(req.body);
         await newUser.save()
+        
         res.status(200).json({
           success: true,
           message: "User created successfully",
@@ -143,36 +148,22 @@ app.post("/signup", async (req, res) =>{
 });
 
 app.post("/login", (req, res, next)=>{
-  // passport.authenticate("local", (err, user, info)=>{
-  //   if(err) return next(err);
-  //   if(!user){
-  //     return res.json({success:false,
-  //       message:"Invalid credentials",
-  //       redirectTo:"/login"
-  //     });
-  //   }
-  //   req.logIn(user,(err)=>{
-  //     if(err) return next(err);
-  //     return res.json({success:true,
-  //       redirectTo:"/"
-  //     });
-  //   })
-  // })(req, res, next)
+  
   User.findOne({username:req.body.username})
   .then(user=>{
     // No user found
     if(!user){
-      return res.status(401).send({
+      return res.status(401).json({
         success:false,
-        message:"Could not find the user."
+        message:"Invalid Username"
       })
     }
 
     // Incorrect Password
     if(!compareSync(req.body.password, user.password)){
-      return res.status(401).send({
+      return res.status(401).json({
         success:false,
-        message:"Incorrect Password"
+        message:"Invalid Password"
       })
     }
 
@@ -190,15 +181,67 @@ app.post("/login", (req, res, next)=>{
 }
 );
 
-app.get("/protected",passport.authenticate("jwt",{session:false}), (req,res)=>{
-  return res.status(200).send({
+// app.get("/auth/verify",passport.authenticate("jwt",{session:false}), (req,res)=>{
+//   return res.status(200).send({
+//     success:true,
+//     user: {
+//       username: req.user.username, // Use saved user data
+//       id: req.user._id, // Correct way to get the user ID
+//   },
+//   })
+// })
+app.get('/auth/verify', passport.authenticate('jwt', { session: false }), (req, res) => {
+  res.json({ valid: true }); // Token is valid
+});
+
+app.post("/resetpassword",sendMail);
+app.post("/setnewpassword/:id",async (req,res)=>{
+  const {id}=req.params;
+  const {password}=req.body;
+  const updatedUser=await User.findByIdAndUpdate(id,{password},{new:true,runValidators: true})
+  await updatedUser.save();
+  res.status(200).json({
     success:true,
-    user: {
-      username: req.user.username, // Use saved user data
-      id: req.user._id, // Correct way to get the user ID
-  },
+    message:"Password updated successfully!"
+  })
+  
+});
+//admin routes
+app.get("/admin/newsandevents", async (req,res)=>{
+  const newsAndEvents=await NewsEvent.find();
+  const news=newsAndEvents.filter((newNewsEvent)=>newNewsEvent.category==="news");
+  const events=newsAndEvents.filter((newNewsEvent)=>newNewsEvent.category==="event");
+  res.status(200).json({news, events, newsAndEvents})
+})
+
+app.post("/admin/newsandevents", async (req,res)=>{
+  const newNewsEvent=new NewsEvent(req.body)
+  await newNewsEvent.save()
+  res.status(200).json({
+    success:true,
+    message:"News or Event created successfully!"
   })
 })
+
+app.patch("/admin/newsandevents/:id/edit", async (req,res)=>{
+  const {id}=req.params;
+  const updatedNewsOrEvent= await NewsEvent.findByIdAndUpdate(id,req.body);
+  await updatedNewsOrEvent.save()
+  res.status(200).json({
+    success:true,
+    message:`News or Event Updated Successfully! ${updatedNewsOrEvent}`
+  })
+})
+
+app.delete("/admin/newsandevents/:id/delete", async (req,res)=>{
+  const {id}=req.params;
+  const deletedNewsOrEvent= await NewsEvent.findByIdAndDelete(id);
+  res.status(200).json({
+    success:true,
+    message:`News or Event Deleted Successfully! ${deletedNewsOrEvent}`
+  })
+})
+
 
 app.all("*", (req, res, next) => {
   let err = new expressError(400, "Page Not Found!");

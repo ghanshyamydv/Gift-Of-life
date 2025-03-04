@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { BiSolidHide, BiSolidShow } from "react-icons/bi";
+import { useNavigate, Link } from 'react-router';
 const signupData={
   username: "",
   email: "",
@@ -15,6 +16,7 @@ function Signup() {
 
     const [showPass, setShowPass] = useState(false);
     const [responseMessage, setResponseMessage] = useState();
+    const navigate=useNavigate();
 
     // validation schema-------------------------
     const validationSchema=Yup.object({
@@ -51,6 +53,7 @@ function Signup() {
             if (response.status === 200) {
               // Reset the form data
               actions.resetForm();
+              navigate("/login");
             } else {
               console.error("Failed to submit data");
             }
@@ -73,6 +76,7 @@ function Signup() {
               onChange={handleChange}
               onBlur={handleBlur}
               className="form-control"
+              autoComplete='username'
             />
             {errors.username && touched.username ? (
             <div className="text-danger">{errors.username}</div>
@@ -87,6 +91,7 @@ function Signup() {
               onChange={handleChange}
               onBlur={handleBlur}
               className="form-control"
+              autoComplete='email'
             />
             {errors.email && touched.email ? (
             <div className="text-danger">{errors.email}</div>
@@ -102,6 +107,7 @@ function Signup() {
               onChange={handleChange}
               onBlur={handleBlur}
               className="form-control"
+              autoComplete="new-password"
             />{showPass ?
               <BiSolidShow
               onClick={() => {
@@ -142,6 +148,7 @@ function Signup() {
               onChange={handleChange}
               onBlur={handleBlur}
               className="form-control"
+              autoComplete="new-password"
             />
             {showPass ?
               <BiSolidShow
@@ -191,6 +198,12 @@ function Signup() {
           <button type="submit" className="btn btn-primary w-100">
             Sign Up
           </button>
+          <p className="text-center mt-4">
+          Already have an account?{" "}
+          <Link to="/login" className="text-blue-500 hover:underline">
+            Login
+          </Link>
+        </p>
         </form>
       </div>
       );

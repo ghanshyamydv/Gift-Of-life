@@ -121,12 +121,12 @@ const donorSchema = new mongoose.Schema({
     type:Boolean,
     required:true
   },
-//   userId: {
-//     type: mongoose.Schema.Types.ObjectId,
-//     ref: 'User',
-//     required: true,
-//     unique: true // Ensures one donorDetail per user
-// },
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
+    unique: true // Ensures one donorDetail per user
+},
 });
 
 const Donor = mongoose.model("Donor", donorSchema);

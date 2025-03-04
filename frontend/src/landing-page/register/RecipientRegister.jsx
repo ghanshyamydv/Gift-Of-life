@@ -1,6 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
+import { useNavigate } from "react-router";
 import axios from "axios";
 import { useFormik } from "formik";
+import { AuthContext } from "../../AuthProvider";
 import * as Yup from "yup";
 import validationRecipientSchema from "../../../public/js/validateRecepient";
 let recipientDetails={
@@ -52,6 +54,13 @@ let recipientDetails={
 function RecipientRegister() {
   const [otherOrganTissue, setOtherOrganTissue] = useState(false);
   const [responseMessage, setResponseMessage] = useState("");
+  const navigate=useNavigate();
+  const {isLoggedIn} = useContext(AuthContext);
+  useEffect(()=>{
+    if(!isLoggedIn){
+      navigate("/login")
+    }
+  },[isLoggedIn, navigate])
 
   //------------------------------formik config -----------------------------------
   const { values, touched, errors, handleBlur, handleChange, handleSubmit, setFieldValue } =
@@ -74,12 +83,8 @@ function RecipientRegister() {
             "Data submitted successfully: " + JSON.stringify(response.data)
           );
           if (response.status === 200) {
-            console.log(responseMessage);
-            console.log(response);
-            
             // Reset the form data
             actions.resetForm();
-            console.log(values);
           } else {
             console.error("Failed to submit data");
           }
@@ -91,12 +96,11 @@ function RecipientRegister() {
 
 //------------------------------------------
 
-
   return (
     <div className="container">
-      <h1>Register a decision to donate</h1>
+      <h1>Register a decision to be a Recipient </h1>
       <p>
-        Your decision to donate can save and transform lives. Thank you for
+        Your decision to recipient can save and transform lives. Thank you for
         making this selfless choice. Fields marked * are mandatory
       </p>
       <h3>Personal Information</h3>

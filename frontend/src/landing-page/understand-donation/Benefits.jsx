@@ -22,10 +22,10 @@ function Benefits() {
         height="415"
         src="https://www.youtube.com/embed/3e2phYzHJOI?si=PXLfLD7f_VvuaPiE"
         title="YouTube video player"
-        frameborder="0"
+        frameBorder="0"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-        referrerpolicy="strict-origin-when-cross-origin"
-        allowfullscreen
+        referrerPolicy="strict-origin-when-cross-origin"
+        allowFullScreen
       ></iframe>
       </div>
     </div>

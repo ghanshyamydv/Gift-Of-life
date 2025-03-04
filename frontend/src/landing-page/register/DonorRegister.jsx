@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState,useContext, useEffect } from "react";
 import OrganDetails from "./OrganDetails";
+import { useNavigate } from "react-router";
 import axios from "axios";
 import { useFormik } from "formik";
-import * as Yup from "yup";
+import { AuthContext } from "../../AuthProvider";
 import validateDonorSchema from "../../../public/js/validateDonor";
 let donorDetails = {
   fullName: "",
@@ -51,9 +52,16 @@ let donorDetails = {
 function DonorRegister() {
   const [moneyInput, setMoneyInput] = useState(false);
   const [someOrgan, setSomeOrgan] = useState(false);
+  const navigate=useNavigate();
 
   const [responseMessage, setResponseMessage] = useState("");
-
+  const {isLoggedIn} = useContext(AuthContext);
+  useEffect(()=>{
+    if(!isLoggedIn){
+      navigate("/login")
+    }
+  },[isLoggedIn, navigate])
+  
   //------------------------------formik config -----------------------------------
   const {
     values,

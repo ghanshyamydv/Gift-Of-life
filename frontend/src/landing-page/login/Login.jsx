@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { Link, useNavigate } from "react-router";
 import axios from "axios";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import { AuthContext } from "../../AuthProvider";
 import { BiSolidHide, BiSolidShow } from "react-icons/bi";
-
 const loginData = {
   username: "",
   password: "",
@@ -12,8 +12,17 @@ const loginData = {
 
 function Login() {
   const [showPass, setShowPass] = useState(false);
-  const [responseMessage, setResponseMessage] = useState("");
+  // const [responseMessage, setResponseMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
   const navigate= useNavigate();
+  const { login,isLoggedIn} = useContext(AuthContext);
+    useEffect(()=>{
+      if(!isLoggedIn){
+        navigate("/login")
+      }else{
+        navigate("/")
+      }
+    },[isLoggedIn, navigate])
 
   // validation schema-------------------------
   const validationSchema = Yup.object({
@@ -23,7 +32,7 @@ function Login() {
     password: Yup.string().required("Password is required"),
   });
 
-  // ----------------------------------
+  // --------------------------------------------
 
   const { values, touched, errors, handleBlur, handleChange, handleSubmit } =
     useFormik({
@@ -36,36 +45,28 @@ function Login() {
             "http://localhost:4000/login",
             values
           );
-          console.log(response.data.redirectTo);
+          // setResponseMessage(response.data.message);
+          login(response.data.token);
+          // Reset the form data
+          actions.resetForm();
+            navigate("/");
+
           
-          if(response.data.success){
-            navigate(response.data.redirectTo);
-          }else{
-            window.location.reload();
-            navigate(response.data.redirectTo);
-            
-          } 
-          setResponseMessage(
-            "Data submitted successfully: " + JSON.stringify(response.data)
-          );
-          if (response.status === 200) {
-            // Reset the form data
-            actions.resetForm();
-          } else {
-            console.error("Failed to submit data");
-          }
         } catch (err) {
-          setResponseMessage("Error: " + err.message);
+          actions.resetForm();
+          navigate("/login");
+          setErrorMessage(err.response.data.message);
         }
       },
     });
-
+    
   return (
     <div
       className="container card p-4 shadow w-100 mt-5 mb-5"
       style={{ maxWidth: "400px" }}
     >
       <h2 className="text-center mb-3">Login</h2>
+      <div className="text-danger text-center">{errorMessage}</div>
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
           <label className="form-label">Username</label>
@@ -76,6 +77,7 @@ function Login() {
             onChange={handleChange}
             onBlur={handleBlur}
             className="form-control"
+            autoComplete="username"
           />
           {errors.username && touched.username ? (
             <div className="text-danger">{errors.username}</div>
@@ -91,6 +93,7 @@ function Login() {
               onChange={handleChange}
               onBlur={handleBlur}
               className="form-control"
+              autoComplete="current-password"
             />
             {showPass ?
               <BiSolidShow
