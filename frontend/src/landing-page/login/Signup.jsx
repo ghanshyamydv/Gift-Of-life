@@ -46,7 +46,7 @@ function Signup() {
       onSubmit: async (values, actions) => {
           // Sending data to backend
           try {
-            const response = await axios.post("http://localhost:4000/signup",values);
+            const response = await axios.post("http://localhost:4000/api/signup",values);
             setResponseMessage(
               "Data submitted successfully: " + JSON.stringify(response.data)
             );

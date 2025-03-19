@@ -1,6 +1,6 @@
 import './App.css';
-import { BrowserRouter, Routes, Route, useLocation} from 'react-router-dom';
-
+import { BrowserRouter, Routes, Route, useLocation, useNavigate} from 'react-router-dom';
+import { useContext, useEffect } from 'react';
 import Navbar from "./landing-page/Navbar";
 import Footer from "./landing-page/Footer";
 
@@ -10,25 +10,35 @@ import NewsEventPage from './landing-page/news&events/NewsEventPage';
 import UnderstandDonationPage from './landing-page/understand-donation/UnderstandDonationPage';
 import DonorRegister from './landing-page/register/DonorRegister';
 import RecipientRegister from './landing-page/register/RecipientRegister';
-import NotFound from './landing-page/NotFound';
+import PageNotFound from './landing-page/PageNotFound';
 import AboutPage from './landing-page/about/AboutPage';
 import Contribute from './landing-page/contribute/Contribute';
-import Story from './landing-page/recipient-story/Story';
+import Story from './landing-page/story/DonorStories';
 import Login from './landing-page/login/Login';
 import Signup from './landing-page/login/Signup';
 import AdminPage from './admin/AdminPage';
 import {AuthProvider} from "./AuthProvider";
 import ResetPassword from './landing-page/login/ResetPassword';
 import SetNewPassword from "./landing-page/login/SetNewPassword";
-
+import ViewNewsAndEvent from './landing-page/news&events/ViewNewsAndEvent';
+import DonorStories from './landing-page/story/DonorStories';
+import RecipientStories from './landing-page/story/RecipientStories';
+import CreateStory from './landing-page/story/CreateStory';
+import ViewDonorStory from './landing-page/story/ViewDonorStory';
+import ViewRecipientStory from './landing-page/story/ViewRecipientStory';
+import Profile from './landing-page/login/Profile';
+import Buy from './landing-page/life-store/Buy';
+import ThankYouPage from './landing-page/life-store/ThankYouPage';
+import Donors from './landing-page/donor-recipient/Donors';
+import Recipients from './landing-page/donor-recipient/Recipients';
+import { AdminAuthProvider } from './admin/AdminAuthProvider';
 const AppRoutes = () => {
   const location = useLocation();
-
   // Check if the URL starts with "/admin"
   const isAdminRoute = location.pathname.startsWith("/admin");
 
   if (isAdminRoute) {
-    return <AdminPage />; // Render only the admin dashboard without AuthProvider
+    return <AdminAuthProvider><AdminPage /></AdminAuthProvider>; // Render only the admin dashboard without AuthProvider
   }
   return(
     <AuthProvider>
@@ -47,7 +57,18 @@ const AppRoutes = () => {
         <Route path="/signup" element={<Signup />} />
         <Route path="/forgot-password" element={<ResetPassword />} />
         <Route path="/set-newpassword" element={<SetNewPassword />} />
-        <Route path="*" element={<NotFound />} />
+        <Route path="/news-event/:id" element={<ViewNewsAndEvent/>} />
+        <Route path="/donor-stories" element={<DonorStories/>} />
+        <Route path="/recipient-stories" element={<RecipientStories/>} />
+        <Route path="/donor-stories/:id" element={<ViewDonorStory/>} />
+        <Route path="/recipient-stories/:id" element={<ViewRecipientStory/>} />
+        <Route path="/create-story" element={<CreateStory/>} />
+        <Route path="/:id/buy" element={<Buy/>} />
+        <Route path="/:id/profile" element={<Profile/>} />
+        <Route path="/thank-you" element={<ThankYouPage/>} />
+        <Route path="/donors" element={<Donors/>} />
+        <Route path="/recipients" element={<Recipients/>} />
+        <Route path="*" element={<PageNotFound />} />
       </Routes>
       <Footer />
     </AuthProvider>

@@ -13,7 +13,7 @@ function Footer() {
         <div className="row border-bottom mb-3 mt-3">
           <div className="col">
             <img
-              src="./images/web-logo.png"
+              src="/images/web-logo.png"
               alt="logo"
               style={{ width: "120px" }}
             />
@@ -21,14 +21,14 @@ function Footer() {
           <div className="col"></div>
           <div className="col">
             <h3 className="mt-2 mb-3">Follow Us</h3>
-            <img src="./images/fb.png" alt="fb-logo" className="social-ac" />
+            <img src="/images/fb.png" alt="fb-logo" className="social-ac" />
             <img
-              src="./images/insta.png"
+              src="/images/insta.png"
               alt="insta-logo"
               className="social-ac"
             />
-            <img src="./images/x.png" alt="x-logo" className="social-ac" />
-            <img src="./images/yt.png" alt="yt-logo" className="social-ac" />
+            <img src="/images/x.png" alt="x-logo" className="social-ac" />
+            <img src="/images/yt.png" alt="yt-logo" className="social-ac" />
           </div>
         </div>
         <div className="row">

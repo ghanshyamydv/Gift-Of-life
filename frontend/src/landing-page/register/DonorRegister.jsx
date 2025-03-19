@@ -1,10 +1,11 @@
 import React, { useState,useContext, useEffect } from "react";
 import OrganDetails from "./OrganDetails";
-import { useNavigate } from "react-router";
+import { useNavigate, useLocation } from "react-router";
 import axios from "axios";
 import { useFormik } from "formik";
 import { AuthContext } from "../../AuthProvider";
 import validateDonorSchema from "../../../public/js/validateDonor";
+import { toast } from 'react-toastify';
 let donorDetails = {
   fullName: "",
   dateOfBirth: "",
@@ -53,14 +54,16 @@ function DonorRegister() {
   const [moneyInput, setMoneyInput] = useState(false);
   const [someOrgan, setSomeOrgan] = useState(false);
   const navigate=useNavigate();
+  const { pathname } = useLocation();
 
-  const [responseMessage, setResponseMessage] = useState("");
   const {isLoggedIn} = useContext(AuthContext);
   useEffect(()=>{
+    window.scrollTo(0, 0); // Scroll to top on route change
     if(!isLoggedIn){
       navigate("/login")
+      toast.warning("Please log in to proceed.")
     }
-  },[isLoggedIn, navigate])
+  },[isLoggedIn, navigate, pathname])
   
   //------------------------------formik config -----------------------------------
   const {
@@ -79,24 +82,22 @@ function DonorRegister() {
       
       // Sending data to backend
       try {
+        const token = localStorage.getItem('token');
+        if(token){
         const response = await axios.post(
-          "http://localhost:4000/donor-register",
+          "http://localhost:4000/api/donor-register",
           values,
           {
-            headers: { "Content-Type": "multipart/form-data" },
+            headers: { "Content-Type": "multipart/form-data" , Authorization:token},
           }
         );
-        setResponseMessage(
-          "Data submitted successfully: " + JSON.stringify(response.data)
-        );
-        if (response.status === 200) {
           // Reset the form data
           actions.resetForm();
-        } else {
-          console.error("Failed to submit data");
-        }
+          navigate("/recipients")
+          toast.success(response.data.message,{autoClose: 5000});
+      }
       } catch (err) {
-        setResponseMessage("Error: " + err.message);
+        toast.error(err.response.data.message);
       }
     },
   });

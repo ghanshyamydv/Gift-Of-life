@@ -10,39 +10,51 @@ const ResetPassword = () => {
   const [message, setMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const { setUserId} = useContext(AuthContext);
+  const [loading, setLoading] = useState(false); // Loading state
+
   const navigate=useNavigate();
 
   const handleSendOtp = async (e) => {
     e.preventDefault();
-    
+    setLoading(true); // Start loading
     try{
         const response = await axios.post(
-            "http://localhost:4000/resetpassword",
+            "http://localhost:4000/api/resetpassword",
             {email}
           );
         // Simulate sending OTP to the email
     setMessage(`OTP has been sent to ${email}`);
+    setErrorMessage("");
     setShowOtpField(true); // Show the OTP input field
     }catch(err){
         // Simulate sending OTP to the email
         setErrorMessage(err.response.data.message);
         setShowOtpField(false); // Show the OTP input field
+    }finally{
+      setLoading(false);
     }
   };
 
   const handleVerifyOtp = async(e) => {
     e.preventDefault();
+    setLoading(true);
     try{
         const response = await axios.post(
-            "http://localhost:4000/resetpassword",
+            "http://localhost:4000/api/resetpassword",
             {otp}
           );
           setUserId(response.data.userId)
           setMessage("OTP verified! You can now reset your password.");
-          navigate("/set-newpassword")
+          setTimeout(()=>{
+            navigate("/set-newpassword");
+          },2000)
           
     }catch(err){
         setMessage("Invalid OTP. Please try again.");
+    }finally{
+      setTimeout(()=>{
+        setLoading(false);
+      },2000)
     }
   };
 
@@ -71,7 +83,17 @@ const ResetPassword = () => {
                     />
                   </div>
                   <button type="submit" className="btn btn-primary w-100">
-                    Send OTP
+                  {loading ? (
+                  // Loading spinner and animation
+                  <div className="d-flex align-items-center justify-content-center">
+                    <div className="spinner-border spinner-border-sm" role="status">
+                      <span className="visually-hidden">Loading...</span>
+                    </div>
+                    <span className="ms-2">Sending OTP...</span>
+                  </div>
+                ) : (
+                  'Send OTP'
+                )} 
                   </button>
                 </form>
               ) : (
@@ -92,7 +114,17 @@ const ResetPassword = () => {
                     />
                   </div>
                   <button type="submit" className="btn btn-primary w-100">
-                    Verify OTP
+                  {loading ? (
+                  // Loading spinner and animation
+                  <div className="d-flex align-items-center justify-content-center">
+                    <div className="spinner-border spinner-border-sm" role="status">
+                      <span className="visually-hidden">Loading...</span>
+                    </div>
+                    <span className="ms-2">Verifying OTP...</span>
+                  </div>
+                ) : (
+                  'Verify OTP'
+                )} 
                   </button>
                 </form>
               )}

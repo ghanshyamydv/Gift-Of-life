@@ -9,10 +9,10 @@ const Slider = () => {
   const slideWidth = 100; // Slide width in %
 
   const slides = [
-    "./images/image1.jpg",
-    "./images/image2.jpg",
-    "./images/image3.jpg",
-    "./images/image4.jpg",
+    "/images/image1.jpg",
+    "/images/image2.jpg",
+    "/images/image3.jpg",
+    "/images/image4.jpg",
   ];
 
   // Clone first and last slides for infinite loop effect

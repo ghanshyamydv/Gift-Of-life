@@ -5,6 +5,8 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { AuthContext } from "../../AuthProvider";
 import { BiSolidHide, BiSolidShow } from "react-icons/bi";
+import { toast } from 'react-toastify';
+
 const loginData = {
   username: "",
   password: "",
@@ -12,7 +14,6 @@ const loginData = {
 
 function Login() {
   const [showPass, setShowPass] = useState(false);
-  // const [responseMessage, setResponseMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const navigate= useNavigate();
   const { login,isLoggedIn} = useContext(AuthContext);
@@ -42,15 +43,15 @@ function Login() {
         // Sending data to backend
         try {
           const response = await axios.post(
-            "http://localhost:4000/login",
+            "http://localhost:4000/api/login",
             values
           );
           // setResponseMessage(response.data.message);
           login(response.data.token);
           // Reset the form data
           actions.resetForm();
-            navigate("/");
-
+          navigate("/");
+          toast.success(response.data.message);
           
         } catch (err) {
           actions.resetForm();

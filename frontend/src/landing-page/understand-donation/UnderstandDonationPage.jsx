@@ -1,9 +1,10 @@
 import React from "react";
 import "./Understand.css";
-import { Link } from "react-router-dom";
+import {useNavigate } from "react-router-dom";
 import LivingOrgan from "./LivingOrgan";
 import Benefits from "./Benefits";
 function UnderstandDonationPage() {
+  const navigate=useNavigate();
   return (
     <div className="container">
       <p>
@@ -141,13 +142,7 @@ function UnderstandDonationPage() {
           </div>
         </div>
         <div className="text-center mt-5">
-          {" "}
-          <Link
-            className="custom-link fs-5 btn btn-success text-white fw-semibold"
-            to="register-donor"
-          >
-            Register to be a Donor
-          </Link>
+        <button className="custom-link fs-5 btn btn-success text-white fw-semibold" onClick={()=>{navigate("/register-donor")}}>Be a Hero-Register Now</button>
         </div>
       </div>
       <div className="row custom-understand-page-bg d-flex justify-content-center align-items-center">

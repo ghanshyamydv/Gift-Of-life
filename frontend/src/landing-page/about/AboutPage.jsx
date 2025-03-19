@@ -1,7 +1,8 @@
 import React from "react";
 import "./About.css";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 function AboutPage() {
+  const navigate=useNavigate();
   return (
     <div className="container pt-3">
       <h1 className="fw-bold ">About Gift Of Life</h1>
@@ -144,7 +145,7 @@ function AboutPage() {
       </div>
       <div className="col-xs-6 col-sm-6 col-lg d-flex flex-column justify-content-center ">
         <img src="./images/volunteer-donor.png" alt="" style={{width:"100%"}} />
-        <div className="text-center mt-2"><Link className="custom-link fs-5 btn btn-success text-white fw-semibold" to="register-donor">Be a Hero-Register Now</Link></div>
+        <div className="text-center mt-2"><button className="custom-link fs-5 btn btn-success text-white fw-semibold" onClick={()=>{navigate("/register-donor")}}>Be a Hero-Register Now</button></div>
       </div>
       </div>
     </div>

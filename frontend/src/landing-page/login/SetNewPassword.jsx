@@ -4,7 +4,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useNavigate } from 'react-router';
 import { AuthContext } from "../../AuthProvider";
-
+import { toast } from 'react-toastify';
 const initialPassword={
   password: "",
   confirmPassword:"",
@@ -12,8 +12,8 @@ const initialPassword={
 
 const ResetPassword = () => {
     const [showPass, setShowPass] = useState(false);
-    const [responseMessage, setResponseMessage] = useState();
     const navigate=useNavigate();
+    const [loading, setLoading] = useState(false); // Loading state
     const { userId} = useContext(AuthContext);
     
   // validation schema-------------------------
@@ -39,21 +39,18 @@ const ResetPassword = () => {
     initialValues: initialPassword,
     validationSchema: validationSchema,
     onSubmit: async (values, actions) => {
+      setLoading(true);
         // Sending data to backend
         try {
-          const response = await axios.post(`http://localhost:4000/setnewpassword/${userId}`,values);
-          setResponseMessage(
-            "Data submitted successfully: " + JSON.stringify(response.data)
-          );
-          if (response.status === 200) {
+          const response = await axios.post(`http://localhost:4000/api/setnewpassword/${userId}`,values);
             // Reset the form data
             actions.resetForm();
             navigate("/login");
-          } else {
-            console.error("Failed to submit data");
-          }
+            toast.success(response.data.message)
         } catch (err) {
-          setResponseMessage("Error: " + err.message);
+          toast.error(err.response.message)
+        }finally{
+          setLoading(false);
         }
     },
   });
@@ -102,7 +99,17 @@ const ResetPassword = () => {
           {errors.confirmPassword && touched.confirmPassword && <p className="text-danger">{errors.confirmPassword}</p>}
 
           <button type="submit" className="btn btn-primary w-100">
-            Reset Password
+          {loading ? (
+                  // Loading spinner and animation
+                  <div className="d-flex align-items-center justify-content-center">
+                    <div className="spinner-border spinner-border-sm" role="status">
+                      <span className="visually-hidden">Loading...</span>
+                    </div>
+                    <span className="ms-2">Verifying OTP...</span>
+                  </div>
+                ) : (
+                  'Reset Password'
+                )} 
           </button>
         </form>
       </div>

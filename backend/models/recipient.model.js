@@ -109,28 +109,51 @@ const recipientSchema = new mongoose.Schema({
     required:true,
   },
   photo: {
-    filename:String,
-    url:String,
+    url:{
+      type:String,
+      required:true
+  },
+  fileName:{
+      type:String,
+      required:true
+  }
   },
   citizenship: {
-    filename:String,
-    url:String,
+    url:{
+      type:String,
+      required:true
+  },
+  fileName:{
+      type:String,
+      required:true
+  }
   },
   hospitalDocs:{
-    filename:String,
-    url:String,
+    url:{
+      type:String,
+      required:true
+  },
+  fileName:{
+      type:String,
+      required:true
+  }
   },
   confirmation: {
     type:Boolean,
     required:true
   },
-//   userId: {
-//     type: mongoose.Schema.Types.ObjectId,
-//     ref: 'User',
-//     required: true,
-//     unique: true // Ensures one donorDetail per user
-// },
-});
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
+    unique: true // Ensures one donorDetail per user
+},
+status: {
+  type: String,
+  enum: ['pending', 'approved', 'rejected'], // Order status
+  default: 'pending',
+},
+}, { timestamps: true });
 
 const Recipient = mongoose.model("Recipient", recipientSchema);
 export default Recipient;

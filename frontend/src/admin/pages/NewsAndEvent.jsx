@@ -293,7 +293,7 @@ const NewsAndEvent = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const resNewsandeventsData = await axios.get("http://localhost:4000/admin/newsandevents");
+        const resNewsandeventsData = await axios.get("http://localhost:4000/api/admin/newsandevents");
         // Assuming the response data is structured as { news: [], events: [] }
         setNewsList(resNewsandeventsData.data.news);
         setEventList(resNewsandeventsData.data.events);
@@ -329,10 +329,10 @@ const NewsAndEvent = () => {
     try {
       if (isEditing) {
         // Update existing item
-        await axios.patch(`http://localhost:4000/admin/newsandevents/${editId}/edit`, formData);
+        await axios.patch(`http://localhost:4000/api/admin/newsandevents/${editId}/edit`, formData);
       } else {
         // Add new item
-        await axios.post("http://localhost:4000/admin/newsandevents", formData);
+        await axios.post("http://localhost:4000/api/admin/newsandevents", formData);
       }
       setRefreshData(!refreshData); // Toggle refreshData to trigger useEffect
       handleCloseModal();
@@ -344,7 +344,7 @@ const NewsAndEvent = () => {
   // Function to handle deleting a news or event item
   const handleDelete = async (id, category) => {
     try {
-      await axios.delete(`http://localhost:4000/admin/newsandevents/${id}/delete`);
+      await axios.delete(`http://localhost:4000/api/admin/newsandevents/${id}/delete`);
       setRefreshData(!refreshData); // Toggle refreshData to trigger useEffect
     } catch (err) {
       console.log("error :", err);
@@ -376,11 +376,11 @@ const NewsAndEvent = () => {
           <h2 className="mb-3 text-center">News</h2>
           <div className="row">
             {newsList.slice().reverse().map((news) => (
-              <div key={news._id} className="col-md-12 mb-4">
+              <div key={news._id} className="col-md-12 mb-4" style={{height:"15rem"}}>
                 <div className="card h-100">
                   <div className="card-body">
                     <h5 className="card-title">{news.title}</h5>
-                    <p className="card-text">{news.description}</p>
+                    <p className="card-text">{news.description.slice(0,50)}</p>
                     <p className="card-text">
                       <small className="text-muted">{news.date}</small>
                     </p>
@@ -410,11 +410,11 @@ const NewsAndEvent = () => {
           <h2 className="mb-3 text-center">Events</h2>
           <div className="row">
             {eventList.slice().reverse().map((event) => (
-              <div key={event._id} className="col-md-12 mb-4">
+              <div key={event._id} className="col-md-12 mb-4" style={{height:"15rem"}}>
                 <div className="card h-100">
                   <div className="card-body">
                     <h5 className="card-title">{event.title}</h5>
-                    <p className="card-text">{event.description}</p>
+                    <p className="card-text">{event.description.slice(0,50)}</p>
                     <p className="card-text">
                       <small className="text-muted">{event.date}</small>
                     </p>

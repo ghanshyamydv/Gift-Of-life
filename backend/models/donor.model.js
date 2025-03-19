@@ -110,12 +110,24 @@ const donorSchema = new mongoose.Schema({
     min:0
   },
   photo: {
-    filename:String,
-    url:String,
+    url:{
+      type:String,
+      required:true
+  },
+  fileName:{
+      type:String,
+      required:true
+  }
   },
   citizenship: {
-    filename:String,
-    url:String,
+    url:{
+      type:String,
+      required:true
+  },
+  fileName:{
+      type:String,
+      required:true
+  }
   },
   confirmation: {
     type:Boolean,
@@ -127,7 +139,12 @@ const donorSchema = new mongoose.Schema({
     required: true,
     unique: true // Ensures one donorDetail per user
 },
-});
+status: {
+  type: String,
+  enum: ['pending', 'approved', 'rejected'], // Order status
+  default: 'pending',
+},
+}, { timestamps: true });
 
 const Donor = mongoose.model("Donor", donorSchema);
 export default Donor;

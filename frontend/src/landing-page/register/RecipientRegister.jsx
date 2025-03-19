@@ -1,10 +1,12 @@
 import React, { useEffect, useState, useContext } from "react";
-import { useNavigate } from "react-router";
+import { useNavigate, useLocation } from "react-router";
 import axios from "axios";
 import { useFormik } from "formik";
 import { AuthContext } from "../../AuthProvider";
 import * as Yup from "yup";
 import validationRecipientSchema from "../../../public/js/validateRecepient";
+import { toast } from 'react-toastify';
+
 let recipientDetails={
   fullName: "",
   dateOfBirth: "",
@@ -53,14 +55,16 @@ let recipientDetails={
 
 function RecipientRegister() {
   const [otherOrganTissue, setOtherOrganTissue] = useState(false);
-  const [responseMessage, setResponseMessage] = useState("");
   const navigate=useNavigate();
+  const { pathname } = useLocation();
   const {isLoggedIn} = useContext(AuthContext);
   useEffect(()=>{
+    window.scrollTo(0, 0); // Scroll to top on route change
     if(!isLoggedIn){
       navigate("/login")
+      toast.warning("Please log in to proceed.")
     }
-  },[isLoggedIn, navigate])
+  },[isLoggedIn, navigate, pathname])
 
   //------------------------------formik config -----------------------------------
   const { values, touched, errors, handleBlur, handleChange, handleSubmit, setFieldValue } =
@@ -69,27 +73,23 @@ function RecipientRegister() {
       validationSchema: validationRecipientSchema,
       onSubmit: async (values, actions) => {
         // Sending data to backend
-        console.log(values);
         
         try {
-          const response = await axios.post(
-            "http://localhost:4000/recipient-register",
-            values,
-            {
-              headers: { "Content-Type": "multipart/form-data" },
+          const token = localStorage.getItem('token');
+            if(token){
+              const response = await axios.post(
+                "http://localhost:4000/api/recipient-register",
+                values,
+                {
+                  headers: { "Content-Type": "multipart/form-data", Authorization:token },
+                }
+              );
+                toast.success(response.data.message,{autoClose: 5000})
+                actions.resetForm();
+                navigate("/donors")
             }
-          );
-          setResponseMessage(
-            "Data submitted successfully: " + JSON.stringify(response.data)
-          );
-          if (response.status === 200) {
-            // Reset the form data
-            actions.resetForm();
-          } else {
-            console.error("Failed to submit data");
-          }
         } catch (err) {
-          setResponseMessage("Error: " + err.message);
+          toast.error(err.response.data.message);
         }
       },
     });

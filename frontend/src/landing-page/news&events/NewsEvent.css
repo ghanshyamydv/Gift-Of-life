@@ -5,6 +5,9 @@
     color: rgb(197, 37, 91) !important; 
     font-weight:650 !important;
 }
+.readmore{
+    color: rgb(197, 37, 91) !important; 
+}
 
 .hover-event:hover{
     background-color: rgb(0, 74, 99) !important;
@@ -13,6 +16,9 @@
 }
 
 .hover-event:hover .custom-fw{
+    color: white !important;
+}
+.hover-event:hover .readmore{
     color: white !important;
 }
 .hover-event:hover span{
@@ -27,7 +33,9 @@
     cursor: pointer !important;
     color: white;
 }
-
+.hover-news:hover .readmore{
+    color: white !important;
+}
 .hover-news:hover .custom-fw{
     color: white !important;
 }
