@@ -1,10 +1,10 @@
-Gift of Life - Organ Donation Website
+<h2>Gift of Life - Organ Donation Website</h2>
 
-Introduction
+<h3>Introduction</h3>
 
 Gift of Life is a web-based platform designed to facilitate organ donation and help connect donors with recipients. The platform aims to raise awareness about organ donation, simplify the registration process for donors, and provide necessary information to those in need of organ transplants.
 
-Features
+<h3>Features</h3>
 
 Donor Registration: Users can sign up as organ donors by providing necessary details.
 
@@ -18,7 +18,7 @@ Admin Panel: Allows administrators to manage users and verify donor registration
 
 Offline Image Upload: Users can upload images even without an internet connection, and they will be synced when online.
 
-Technologies Used
+<h3>Technologies Used</h3>
 
 Frontend: React.js, Bootstrap
 
@@ -32,7 +32,7 @@ Offline Storage: Local storage and IndexedDB for offline image uploads
 
 Authentication: JWT (JSON Web Token) for secure login
 
-Installation & Setup
+<h3>Installation & Setup</h3>
 
 Prerequisites
 
@@ -65,5 +65,5 @@ MongoDB (or a cloud database like MongoDB Atlas)
   npm run dev
   
   
-Note: no need to configure .env images will get stored in images folder of your backend folder and it will get default port 4000
+<h3>Note: no need to configure .env images will get stored in images folder of your backend folder and it will get default port 4000</h3>
 
