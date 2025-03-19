@@ -702,6 +702,6 @@ app.use((err, req, res, next) => {
   res.status(statusCode).json({ message });
 });
 
-app.listen(process.env.PORT || 8000, () => {
+app.listen(process.env.PORT || 4000, () => {
   console.log(`app is listening at port ${process.env.PORT}`);
 });
