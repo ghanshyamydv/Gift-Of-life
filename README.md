@@ -42,17 +42,28 @@ Node.js
 
 MongoDB (or a cloud database like MongoDB Atlas)
 
-Steps to Run the Project
+
+<h3>Steps to Run the Project</h3>
 
 1.Clone the repository:
   git clone https://github.com/ghanshyamydv/Gift-Of-life.git
+  
 2.Install dependencies and run:
+
   open two different terminal
+  
   in 1st terminal run "cd backend"
+  
   npm install
+  
   node --watch app.js
+  
   in 2st terminal run "cd frontend"
+  
   npm install
+  
   npm run dev
+  
+  
 Note: no need to configure .env images will get stored in images folder of your backend folder and it will get default port 4000
 
