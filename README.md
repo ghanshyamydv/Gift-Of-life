@@ -20,7 +20,7 @@ Offline Image Upload: Users can upload images even without an internet connectio
 
 <h3>Technologies Used</h3>
 
-Frontend: React.js, Bootstrap
+Frontend: React.js, Bootstrap, CSS
 
 Backend: Node.js, Express.js
 
