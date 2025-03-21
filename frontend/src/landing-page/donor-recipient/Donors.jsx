@@ -4,7 +4,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { AuthContext } from "../../AuthProvider";
 
 const DonorsPage = () => {
-  const {renderViewAll}=useContext(AuthContext);
+  const {backendUrl,renderViewAll}=useContext(AuthContext);
   const [donors, setDonors] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -12,7 +12,7 @@ const DonorsPage = () => {
   useEffect(() => {
     const fetchDonors = async () => {
       try {
-        const response = await axios.get("http://localhost:4000/api/donors");
+        const response = await axios.get(`${backendUrl}/api/donors`);
         console.log(response.data.donors[0]);
         setDonors(response.data.donors);
         setLoading(false);
@@ -37,7 +37,7 @@ const DonorsPage = () => {
     event.preventDefault();
     const searchTerm=event.target.elements.searchInput.value;
     try {
-      const response = await axios.get("http://localhost:4000/api/donors/search", {
+      const response = await axios.get(`${backendUrl}/api/donors/search`, {
         params: { q: searchTerm }, // Send search term as a query parameter
       });
       

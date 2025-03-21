@@ -56,7 +56,7 @@ function DonorRegister() {
   const navigate=useNavigate();
   const { pathname } = useLocation();
 
-  const {isLoggedIn} = useContext(AuthContext);
+  const {backendUrl,isLoggedIn} = useContext(AuthContext);
   useEffect(()=>{
     window.scrollTo(0, 0); // Scroll to top on route change
     if(!isLoggedIn){
@@ -85,7 +85,7 @@ function DonorRegister() {
         const token = localStorage.getItem('token');
         if(token){
         const response = await axios.post(
-          "http://localhost:4000/api/donor-register",
+          `${backendUrl}/api/donor-register`,
           values,
           {
             headers: { "Content-Type": "multipart/form-data" , Authorization:token},
@@ -283,13 +283,14 @@ function DonorRegister() {
               Mobile Number *
             </label>
             <input
-              type="number"
+              type="text"
               className="form-control border-dark"
               id="mobile-number"
               name="phoneNumber"
               value={values.phoneNumber}
               onChange={handleChange}
               onBlur={handleBlur}
+              pattern="[0-9]{10}"
             />
             {errors.phoneNumber && touched.phoneNumber ? (
               <div className="text-danger">{errors.phoneNumber}</div>

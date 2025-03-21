@@ -4,8 +4,8 @@ import User from "./models/user.model.js";
 // Temporary OTP storage (Use Redis or DB in production)
 const otpStorage = {otp:null};
 let userStorage="";
+
 const sendOtp=async(req,res)=>{
-    
     // 1️⃣ **If OTP verification is requested**
     if (req.body.otp) {
         if (otpStorage.otp === req.body.otp) {
@@ -94,6 +94,13 @@ const sendOtp=async(req,res)=>{
                 if(error){
                     throw error;
                 }
+                console.log(emailResponse);
+                if(otpStorage.otp){
+                    setTimeout(()=>{
+                        otpStorage.otp=null;                        
+                    },600000)
+                }
+                
                 res.status(200).json({
                     success:true,
                     message:"OTP sent successfully!"

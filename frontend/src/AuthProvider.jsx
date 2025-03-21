@@ -1,54 +1,3 @@
-// import React, { createContext, useState, useEffect } from 'react';
-// import axios from 'axios';
-
-// const AuthContext = createContext();
-
-// const AuthProvider = ({ children }) => {
-//   const [isLoggedIn, setIsLoggedIn] = useState(false);
-//   const [userId, setUserId]=useState("");
-
-//   // Check if the user is logged in on initial load
-//   useEffect(() => {
-//     const validateToken = async () => {
-//       try {
-//         const token = localStorage.getItem('token');
-//         if (token) {
-//           const response = await axios.get('http://localhost:4000/auth/verify', {
-//             headers: { Authorization: token },
-//           });
-//           setUserId(response.data.userId);
-//           setIsLoggedIn(response.data.valid); // Update state based on token validity
-//         } else {
-//           setIsLoggedIn(false); // No token found
-//         }
-//       } catch (error) {
-//         setIsLoggedIn(false); // Token validation failed
-//       }
-//     };
-//     validateToken(); // Call the function on initial load
-//   }, []);
-
-//   // Login function
-//   const login = (token) => {
-//     localStorage.setItem('token', token); // Save token to localStorage
-//     setIsLoggedIn(true); // Update state
-//   };
-
-//   // Logout function
-//   const logout = () => {
-//     localStorage.removeItem('token'); // Remove token from localStorage
-//     setIsLoggedIn(false); // Update state
-//   };
-
-//   return (
-//     <AuthContext.Provider value={{ isLoggedIn, login, logout, userId, setUserId }}>
-//       {children}
-//     </AuthContext.Provider>
-//   );
-// };
-
-// export { AuthContext, AuthProvider };
-
 import React, { createContext, useState, useEffect } from 'react';
 import axios from 'axios';
 import { useLocation, useNavigate } from 'react-router';
@@ -65,14 +14,14 @@ const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true); // Add loading state
   const [userId, setUserId]=useState("");
   const [registered, setRegistered]=useState(false);
-
+  const backendUrl="http://localhost:4000";
   // Function to validate token
   const validateToken = async () => {
     try {
       setLoading(true);
       const token = localStorage.getItem('token');
       if (token) {
-        const response = await axios.get('http://localhost:4000/api/auth/verify', {
+        const response = await axios.get(`${backendUrl}/api/auth/verify`, {
           headers: { Authorization: token },
         });
         setUserId(response.data.user._id);
@@ -94,7 +43,7 @@ const AuthProvider = ({ children }) => {
   // Function to check registered or not
   const isRegistered= async () => {
     try {
-        const response = await axios.get( `http://localhost:4000/api/${
+        const response = await axios.get( `${backendUrl}/api/${
           user.category === "donor" 
             ? `donor-registered/${user._id}` 
             : `recipient-registered/${user._id}`
@@ -117,6 +66,7 @@ const AuthProvider = ({ children }) => {
     if (user) {
       isRegistered();
     }
+    
   }, [user]); // Add `user` as a dependency
 
   if(location.pathname==="/donors" && user?.category==="donor"){
@@ -137,8 +87,13 @@ const AuthProvider = ({ children }) => {
     setUser(null); // Clear user state
   };
 
+  // Function to update user data
+  const updateUser = async () => {
+    await validateToken(); // Fetch and update user data
+  };
+
   return (
-    <AuthContext.Provider value={{ isLoggedIn, login, logout, user, setUser, loading , setUserId, userId, registered, renderViewAll, setRenderViewAll}}>
+    <AuthContext.Provider value={{ backendUrl,isLoggedIn, login, logout, user,updateUser,loading , setUserId, userId, registered, renderViewAll, setRenderViewAll}}>
       {children}
     </AuthContext.Provider>
   );

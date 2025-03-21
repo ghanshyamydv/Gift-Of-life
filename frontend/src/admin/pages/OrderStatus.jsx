@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
+import { AdminAuthContext } from '../AdminAuthProvider';
 
 const OrderStatus = () => {
+  const {backendUrl}=useContext(AdminAuthContext);
   const [orders, setOrders] = useState([]);
   const [completedOrders, setCompletedOrders] = useState(0);
   const [remainingOrders, setRemainingOrders] = useState(0);
@@ -10,7 +12,7 @@ const OrderStatus = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await axios.get('http://localhost:4000/api/orders');
+        const response = await axios.get(`${backendUrl}/api/orders`);
         setOrders(response.data.orders);
         updateOrderCounts(response.data.orders);
       } catch (error) {
@@ -31,10 +33,10 @@ const OrderStatus = () => {
   // Mark an order as delivered
   const handleDeliverOrder = async (orderId) => {
     try {
-      const response = await axios.patch(`http://localhost:4000/api/orders/${orderId}/deliver`);
+      const response = await axios.patch(`${backendUrl}/api/orders/${orderId}/deliver`);
       if (response.data.success) {
         // Re-fetch the updated list of orders
-        const fetchResponse = await axios.get('http://localhost:4000/api/orders');
+        const fetchResponse = await axios.get(`${backendUrl}/api/orders`);
         setOrders(fetchResponse.data.orders); // Update the orders state
         updateOrderCounts(fetchResponse.data.orders); // Update the counts
       }
@@ -46,10 +48,10 @@ const OrderStatus = () => {
   // Cancel an order
   const handleCancelOrder = async (orderId) => {
     try {
-      const response = await axios.delete(`http://localhost:4000/api/orders/${orderId}`);
+      const response = await axios.delete(`${backendUrl}/api/orders/${orderId}`);
       if (response.data.success) {
         // Re-fetch the updated list of orders
-        const fetchResponse = await axios.get('http://localhost:4000/api/orders');
+        const fetchResponse = await axios.get(`${backendUrl}/api/orders`);
         setOrders(fetchResponse.data.orders); // Update the orders state
         updateOrderCounts(fetchResponse.data.orders); // Update the counts
       }

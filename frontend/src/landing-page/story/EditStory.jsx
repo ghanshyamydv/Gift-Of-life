@@ -4,11 +4,12 @@ import { AuthContext } from "../../AuthProvider";
 import axios from "axios";
 import { toast } from 'react-toastify';
 
-const DonorStoryForm = () => {
+const EditStoryForm = ({story, onClose}) => {
+  const {backendUrl,updateUser}=useContext(AuthContext);
   const navigate=useNavigate();
   const { pathname } = useLocation();
 
-  const {backendUrl,isLoggedIn} = useContext(AuthContext);
+  const {isLoggedIn} = useContext(AuthContext);
   useEffect(()=>{
     window.scrollTo(0, 0); // Scroll to top on route change
     if(!isLoggedIn){
@@ -20,13 +21,13 @@ const DonorStoryForm = () => {
   },[isLoggedIn, navigate, pathname])
 
   const [formData, setFormData] = useState({
-    title: "",
-    image: "",
-    description: "",
-    category: "", // Default category
+    title: story.title,
+    image: story.image,
+    description: story.description,
+    category: story.category, // Default category
   });
 
-  const [imagePreview, setImagePreview] = useState(null); // State for image preview
+  const [imagePreview, setImagePreview] = useState(formData.image.url); // State for image preview
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -53,31 +54,27 @@ const DonorStoryForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Form Data Submitted:", {
-      ...formData// Log the file name instead of the file object
-    });
     try {
-        const token = localStorage.getItem('token');
-        if(token){
-        const response = await axios.post(`${backendUrl}/api/create-story`,formData,
+        const response = await axios.patch(`${backendUrl}/api/story/${story._id}/edit`,formData,
             {
-                headers: { "Content-Type": "multipart/form-data", Authorization:token },
+                headers: { "Content-Type": "multipart/form-data"},
             }
         );
        toast.success(response.data.message,{autoClose:3000})
-          navigate(-1);
-    }
+       updateUser();
+       onClose();
       } catch (err) {
       toast.error(err.response.data.message)
       }
   };
 
   return (
+    <div className="custom-modal-overlay">
     <div className="container my-5">
       <div className="row justify-content-center">
         <div className="col-md-8">
           <div className="donor-story-form p-4 bg-light rounded shadow">
-            <h2 className="text-center mb-4">Share Your Gift of Life Story</h2>
+            <h2 className="text-center mb-4">Edit Your Gift of Life Story</h2>
             <form onSubmit={handleSubmit}>
               {/* Title Field */}
               <div className="mb-3">
@@ -126,7 +123,6 @@ const DonorStoryForm = () => {
                   name="image"
                   accept="image/*"
                   onChange={handleImageChange}
-                  required
                 />
                 {imagePreview && (
                   <div className="mt-3">
@@ -158,16 +154,16 @@ const DonorStoryForm = () => {
 
               {/* Submit Button */}
               <div className="text-center">
-                <button type="submit" className="btn btn-primary btn-lg">
-                  Share Your Story
-                </button>
+              <button type="submit" className="btn btn-success mt-3">Save Changes</button>
+              <button type="button" className="btn btn-secondary mt-3 ms-3 ml-2" onClick={onClose}>Cancel</button>
               </div>
             </form>
           </div>
         </div>
       </div>
     </div>
+    </div>
   );
 };
 
-export default DonorStoryForm;
+export default EditStoryForm;

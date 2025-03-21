@@ -1,14 +1,16 @@
-import React ,{useState, useEffect} from 'react'
+import React ,{useState, useEffect, useContext} from 'react'
 import axios from 'axios';
 import "./NewsEvent.css"
 import { Link } from 'react-router-dom'
+import { AuthContext } from '../../AuthProvider';
 function NewsEventPage() {
+  const {backendUrl}=useContext(AuthContext);
   const [newsAndEvents, setNewsAndEvents] = useState([]);
   // Fetch data from the server
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const resNewsandeventsData = await axios.get("http://localhost:4000/api/admin/newsandevents");
+        const resNewsandeventsData = await axios.get(`${backendUrl}/api/admin/newsandevents`);
         setNewsAndEvents(resNewsandeventsData.data.newsAndEvents);
       } catch (err) {
         console.log("error :", err);

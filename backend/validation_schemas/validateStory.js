@@ -18,7 +18,7 @@ const storyValidationSchema = yup.object().shape({
     url: yup
       .string()
       .required('Image URL is required')
-      .url('Image URL must be a valid URL'),
+      // .url('Image URL must be a valid URL'),
   }),
 
   category: yup

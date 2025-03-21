@@ -1,16 +1,18 @@
 
-import React ,{useEffect, useState} from 'react'
+import React ,{useContext, useEffect, useState} from 'react'
 import { useParams } from 'react-router';
 import axios from 'axios';
+import { AuthContext } from '../../AuthProvider';
 
 function ViewRecipientStory() {
+  const {backendUrl}=useContext(AuthContext);
     const {id}=useParams();
     const [donorStory, setDonorStory] = useState();
   // Fetch data from the server
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`http://localhost:4000/api/recipient-stories/${id}`);
+        const response = await axios.get(`${backendUrl}/api/recipient-stories/${id}`);
         setDonorStory(response.data.story);
       } catch (err) {
         console.log("error :", err);

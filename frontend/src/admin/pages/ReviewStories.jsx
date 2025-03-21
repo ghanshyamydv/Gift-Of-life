@@ -12,10 +12,12 @@
 //   fetchData();
 // }, []); // Add refreshData as a dependency
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
+import { AdminAuthContext } from '../AdminAuthProvider';
 
 const ReviewStoryPage = () => {
+    const {backendUrl}=useContext(AdminAuthContext);
     const [stories, setStories] = useState([]);
 
     // Fetch stories from the backend
@@ -25,7 +27,7 @@ const ReviewStoryPage = () => {
 
     const fetchStories = async () => {
         try {
-            const response = await axios.get('http://localhost:4000/api/admin/review-stories');
+            const response = await axios.get(`${backendUrl}/api/admin/review-stories`);
             setStories(response.data.reviewStory);
         } catch (error) {
             console.error('Error fetching stories:', error);

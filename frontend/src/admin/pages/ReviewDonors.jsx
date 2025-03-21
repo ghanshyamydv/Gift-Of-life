@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
+import { AdminAuthContext } from '../AdminAuthProvider';
 
 const ReviewDonors = () => {
+    const {backendUrl}=useContext(AdminAuthContext);
     const [donors, setDonors] = useState([]);
 
     // Fetch Donors from the backend
@@ -11,7 +13,7 @@ const ReviewDonors = () => {
 
     const fetchDonors = async () => {
         try {
-            const response = await axios.get('http://localhost:4000/api/admin/review-donors');  
+            const response = await axios.get(`${backendUrl}/api/admin/review-donors`);  
             setDonors(response.data.donors);
         } catch (error) {
             console.error('Error fetching Donors:', error);
@@ -21,7 +23,7 @@ const ReviewDonors = () => {
     // Approve a donor
     const approveDonor = async (id) => {
         try {
-            await axios.patch(`http://localhost:4000/api/admin/review-donor/${id}/approve`);
+            await axios.patch(`${backendUrl}/api/admin/review-donor/${id}/approve`);
             fetchDonors(); // Refresh the list after approval
         } catch (error) {
             console.error('Error approving donor:', error);
@@ -31,7 +33,7 @@ const ReviewDonors = () => {
     // Delete a donor
     const rejectDonor = async (id) => {
         try {
-            await axios.patch(`http://localhost:4000/api/admin/review-donor/${id}/reject`);
+            await axios.patch(`${backendUrl}/api/admin/review-donor/${id}/reject`);
             fetchDonors(); // Refresh the list after deletion
         } catch (error) {
             console.error('Error deleting donor:', error);

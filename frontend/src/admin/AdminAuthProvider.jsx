@@ -11,14 +11,14 @@ const AdminAuthProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [admin, setAdmin] = useState(null); // Initialize admin as null
   const [loading, setLoading] = useState(true); // Add loading state
-
+  const backendUrl="http://localhost:4000";
   // Function to validate token
   const validateToken = async () => {
     try {
       setLoading(true);
       const adminToken = localStorage.getItem('adminToken');
       if (adminToken) {
-        const response = await axios.get('http://localhost:4000/api/admin/verify', {
+        const response = await axios.get(`${backendUrl}/api/admin/verify`, {
           headers: { Authorization: adminToken },
         });
         setAdmin(response.data.admin);
@@ -57,7 +57,7 @@ const AdminAuthProvider = ({ children }) => {
   };
 
   return (
-    <AdminAuthContext.Provider value={{ isLoggedIn, login, logout, admin, setAdmin, loading }}>
+    <AdminAuthContext.Provider value={{ backendUrl,isLoggedIn, login, logout, admin, setAdmin, loading }}>
       {children}
     </AdminAuthContext.Provider>
   );

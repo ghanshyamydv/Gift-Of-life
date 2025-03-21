@@ -9,7 +9,7 @@ const ResetPassword = () => {
   const [showOtpField, setShowOtpField] = useState(false);
   const [message, setMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const { setUserId} = useContext(AuthContext);
+  const { backendUrl,setUserId} = useContext(AuthContext);
   const [loading, setLoading] = useState(false); // Loading state
 
   const navigate=useNavigate();
@@ -19,7 +19,7 @@ const ResetPassword = () => {
     setLoading(true); // Start loading
     try{
         const response = await axios.post(
-            "http://localhost:4000/api/resetpassword",
+            `${backendUrl}/api/resetpassword`,
             {email}
           );
         // Simulate sending OTP to the email
@@ -40,10 +40,10 @@ const ResetPassword = () => {
     setLoading(true);
     try{
         const response = await axios.post(
-            "http://localhost:4000/api/resetpassword",
+            `${backendUrl}/api/resetpassword`,
             {otp}
           );
-          setUserId(response.data.userId)
+          setUserId(response.data.userId);
           setMessage("OTP verified! You can now reset your password.");
           setTimeout(()=>{
             navigate("/set-newpassword");

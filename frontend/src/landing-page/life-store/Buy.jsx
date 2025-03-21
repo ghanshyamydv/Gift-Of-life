@@ -1,10 +1,12 @@
 import axios from 'axios';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import { toast } from 'react-toastify';
+import { AuthContext } from '../../AuthProvider';
 
 const BuyPage = () => {
   const { id } = useParams();
+  const {backendUrl}=useContext(AuthContext);
   const navigate = useNavigate();
   const [product, setProduct] = useState([]);
   const [loading, setLoading] = useState(false); // Loading state
@@ -14,7 +16,7 @@ const BuyPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`http://localhost:4000/api/admin/product/${id}`);
+        const response = await axios.get(`${backendUrl}/api/admin/product/${id}`);
         setProduct(response.data.product);
       } catch (err) {
         console.log("error :", err);
@@ -53,7 +55,7 @@ const BuyPage = () => {
     setTimeout(async () => {
       try {
         const newFormData = { ...formData, totalPrice };
-        const response = await axios.post(`http://localhost:4000/api/${id}/buy`, newFormData);
+        const response = await axios.post(`${backendUrl}/api/${id}/buy`, newFormData);
         if (response.data.success) {
           // Navigate to the Thank You page with formData as state
           navigate('/thank-you', { state: { order: response.data.order } });

@@ -16,7 +16,7 @@ function Login() {
   const [showPass, setShowPass] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const navigate= useNavigate();
-  const { login,isLoggedIn} = useContext(AuthContext);
+  const { backendUrl,login,isLoggedIn} = useContext(AuthContext);
     useEffect(()=>{
       if(!isLoggedIn){
         navigate("/login")
@@ -43,7 +43,7 @@ function Login() {
         // Sending data to backend
         try {
           const response = await axios.post(
-            "http://localhost:4000/api/login",
+            `${backendUrl}/api/login`,
             values
           );
           // setResponseMessage(response.data.message);

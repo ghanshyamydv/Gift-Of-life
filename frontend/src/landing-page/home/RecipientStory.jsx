@@ -1,8 +1,10 @@
 import axios from 'axios';
-import React , {useEffect, useState}from 'react';
+import React , {useContext, useEffect, useState}from 'react';
 import { Link, useLocation, useNavigate } from 'react-router';
+import { AuthContext } from '../../AuthProvider';
 
 function RecipientStory() {
+  const {backendUrl}=useContext(AuthContext);
   const { pathname } = useLocation();
   const navigate=useNavigate();
   const [recipientStories, setRecipientStories]=useState([]);
@@ -11,7 +13,7 @@ function RecipientStory() {
 
     const fetchData = async () => {
       try{
-        const response=await axios.get("http://localhost:4000/api/approved-stories");
+        const response=await axios.get(`${backendUrl}/api/approved-stories`);
         const data=response.data.stories.filter((story)=>story.category==="recipient").slice(0, 3);
         setRecipientStories(data);
         

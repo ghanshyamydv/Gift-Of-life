@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import axios from 'axios';
+import { AdminAuthContext } from '../AdminAuthProvider';
 
 const PostProduct = () => {
+  const {backendUrl}=useContext(AdminAuthContext);
   const [productData, setProductData] = useState({
     name: '',
     description: '',
@@ -34,7 +36,7 @@ const PostProduct = () => {
     formData.append('image', imageFile); // Append the image file
 
     try {
-      const response = await axios.post('http://localhost:4000/api/admin/product', formData, {
+      const response = await axios.post(`${backendUrl}/api/admin/product`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data', // Set the content type for file upload
         },

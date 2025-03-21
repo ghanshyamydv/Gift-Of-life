@@ -57,7 +57,7 @@ function RecipientRegister() {
   const [otherOrganTissue, setOtherOrganTissue] = useState(false);
   const navigate=useNavigate();
   const { pathname } = useLocation();
-  const {isLoggedIn} = useContext(AuthContext);
+  const {backendUrl,isLoggedIn} = useContext(AuthContext);
   useEffect(()=>{
     window.scrollTo(0, 0); // Scroll to top on route change
     if(!isLoggedIn){
@@ -78,7 +78,7 @@ function RecipientRegister() {
           const token = localStorage.getItem('token');
             if(token){
               const response = await axios.post(
-                "http://localhost:4000/api/recipient-register",
+                `${backendUrl}/api/recipient-register`,
                 values,
                 {
                   headers: { "Content-Type": "multipart/form-data", Authorization:token },
@@ -275,13 +275,14 @@ function RecipientRegister() {
               Mobile Number *
             </label>
             <input
-              type="number"
+              type="text"
               className="form-control border-dark"
               id="mobile-number"
               name="phoneNumber"
               value={values.phoneNumber}
               onChange={handleChange}
               onBlur={handleBlur}
+              pattern="[0-9]{10}"
             />
             {errors.phoneNumber && touched.phoneNumber ? (
             <div className="text-danger">{errors.phoneNumber}</div>

@@ -5,6 +5,7 @@ const userSchema = new mongoose.Schema({
     username: {
         type: String,
         required: true,
+        unique:true,
         trim: true,
         minlength: 3,
         maxlength: 30
@@ -30,6 +31,9 @@ const userSchema = new mongoose.Schema({
     phoneNumber: {
         type: Number,
       },
+      gender:String,
+      fullName:String,
+      address:String,
       profileImage: {
         url:{
             type:String,

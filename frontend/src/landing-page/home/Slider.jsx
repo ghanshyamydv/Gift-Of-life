@@ -25,13 +25,30 @@ const Slider = () => {
     }
   };
 
-  const nextSlide = () => {
-    setCurrentIndex((prev) => prev + 1);
-  };
+  // const nextSlide = () => {
+  //   setCurrentIndex((prev) => prev + 1);
+  // };
 
-  const prevSlide = () => {
-    setCurrentIndex((prev) => prev - 1);
-  };
+  // const prevSlide = () => {
+  //   setCurrentIndex((prev) => prev - 1);
+  // };
+
+  const [isAnimating, setIsAnimating] = useState(false);
+
+const nextSlide = () => {
+  if (isAnimating) return;
+  setIsAnimating(true);
+  setCurrentIndex((prev) => prev + 1);
+  setTimeout(() => setIsAnimating(false), 600); // Cooldown to match transition duration
+};
+
+const prevSlide = () => {
+  if (isAnimating) return;
+  setIsAnimating(true);
+  setCurrentIndex((prev) => prev - 1);
+  setTimeout(() => setIsAnimating(false), 600);
+};
+
 
   const handleTransitionEnd = () => {
     if (currentIndex === 0) {

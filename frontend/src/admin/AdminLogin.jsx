@@ -13,6 +13,7 @@ const loginData = {
 };
 
 function AdminLogin() {
+  const {backendUrl}=useContext(AdminAuthContext);
   const [showPass, setShowPass] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const navigate= useNavigate();
@@ -43,7 +44,7 @@ function AdminLogin() {
         // Sending data to backend
         try {
           const response = await axios.post(
-            "http://localhost:4000/api/admin/login",
+            `${backendUrl}/api/admin/login`,
             values
           );
           // setResponseMessage(response.data.message);

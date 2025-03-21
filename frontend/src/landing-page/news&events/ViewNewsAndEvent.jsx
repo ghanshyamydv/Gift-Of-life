@@ -1,9 +1,11 @@
 
-import React ,{useEffect, useState} from 'react'
+import React ,{useContext, useEffect, useState} from 'react'
 import { useParams } from 'react-router';
 import axios from 'axios';
+import { AuthContext } from '../../AuthProvider';
 
 function ViewNewsAndEvent() {
+  const {backendUrl}=useContext(AuthContext);
     const {id}=useParams();
     const [newsAndEvent, setNewsAndEvent] = useState();
 
@@ -11,7 +13,7 @@ function ViewNewsAndEvent() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const resNewsandeventsData = await axios.get(`http://localhost:4000/api/admin/newsandevent/${id}`);
+        const resNewsandeventsData = await axios.get(`${backendUrl}/api/admin/newsandevent/${id}`);
         setNewsAndEvent(resNewsandeventsData.data.newsAndEvent);
       } catch (err) {
         console.log("error :", err);

@@ -4,6 +4,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useNavigate } from 'react-router';
 import { AuthContext } from "../../AuthProvider";
+import { BiSolidHide, BiSolidShow } from "react-icons/bi";
 import { toast } from 'react-toastify';
 const initialPassword={
   password: "",
@@ -14,7 +15,7 @@ const ResetPassword = () => {
     const [showPass, setShowPass] = useState(false);
     const navigate=useNavigate();
     const [loading, setLoading] = useState(false); // Loading state
-    const { userId} = useContext(AuthContext);
+    const { backendUrl,userId} = useContext(AuthContext);
     
   // validation schema-------------------------
   const validationSchema=Yup.object({
@@ -42,7 +43,7 @@ const ResetPassword = () => {
       setLoading(true);
         // Sending data to backend
         try {
-          const response = await axios.post(`http://localhost:4000/api/setnewpassword/${userId}`,values);
+          const response = await axios.post(`${backendUrl}/api/setnewpassword/${userId}`,values);
             // Reset the form data
             actions.resetForm();
             navigate("/login");
@@ -64,14 +65,15 @@ const ResetPassword = () => {
   
   return (
     <div className="container d-flex justify-content-center align-items-center vh-100">
-      <div className="card shadow-lg p-4 w-50">
+      <div className="border shadow-lg p-4 w-50" style={{minWidth:"400px"}}>
         <h2 className="text-center mb-4">Reset Password</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
             <input type="text" name="username" autoComplete="username" style={{display:"none"}}/>
             <label className="form-label">New Password</label>
+            <div style={{position:"relative"}}>
             <input
-              type="password"
+              type={showPass?"text":"password"}
               className="form-control"
               placeholder="Enter new password"
               autoComplete="new-password"
@@ -80,12 +82,40 @@ const ResetPassword = () => {
               onChange={handleChange}
               onBlur={handleBlur}
             />
+            {showPass ?
+                          <BiSolidShow
+                          onClick={() => {
+                            setShowPass(false);
+                          }}
+                          style={{
+                            position: "absolute",
+                            top: "50%",
+                            right: "10px",
+                            transform: "translateY(-50%)",
+                            cursor: "pointer",
+                          }}
+                        />:
+                        <BiSolidHide
+                          onClick={() => {
+                            setShowPass(true);
+                          }}
+                          style={{
+                            position: "absolute",
+                            top: "50%",
+                            right: "10px",
+                            transform: "translateY(-50%)",
+                            cursor: "pointer",
+                          }}
+                        />
+                      } 
+                      </div>
           </div>
           {errors.password && touched.password?<p className="text-danger">{errors.password}</p>:null}
           <div className="mb-3">
             <label className="form-label">Confirm Password</label>
+            <div style={{position:"relative"}}>
             <input
-              type="password"
+              type={showPass?"text":"password"}
               className="form-control"
               placeholder="Confirm new password"
               autoComplete="new-password"
@@ -94,6 +124,33 @@ const ResetPassword = () => {
               onChange={handleChange}
               onBlur={handleBlur}
             />
+            {showPass ?
+                          <BiSolidShow
+                          onClick={() => {
+                            setShowPass(false);
+                          }}
+                          style={{
+                            position: "absolute",
+                            top: "50%",
+                            right: "10px",
+                            transform: "translateY(-50%)",
+                            cursor: "pointer",
+                          }}
+                        />:
+                        <BiSolidHide
+                          onClick={() => {
+                            setShowPass(true);
+                          }}
+                          style={{
+                            position: "absolute",
+                            top: "50%",
+                            right: "10px",
+                            transform: "translateY(-50%)",
+                            cursor: "pointer",
+                          }}
+                        />
+                      } 
+                      </div>
           </div>
 
           {errors.confirmPassword && touched.confirmPassword && <p className="text-danger">{errors.confirmPassword}</p>}

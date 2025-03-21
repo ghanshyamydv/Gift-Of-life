@@ -11,7 +11,7 @@ import Recepient from "./models/recipient.model.js";
 import User from "./models/user.model.js"
 import NewsEvent from "./models/newsevent.model.js";
 import multer from "multer";
-// import { storage } from "./cloudinary.js";
+import { storage } from "./cloudinary.js";
 import expressError from "./utils/expressError.js"
 import passport from "./passportConfig.js";
 import { compareSync } from "bcrypt";
@@ -37,28 +37,28 @@ import Admin from "./models/admin.model.js";
 const app = express();
 
 // Get the directory name
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+// const __filename = fileURLToPath(import.meta.url);
+// const __dirname = path.dirname(__filename);
 
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-      cb(null, './images'); // Store files in the "uploads" folder
-    },
-    filename: function (req, file, cb) {
-      cb(null, Date.now() + '-' + file.originalname); // Rename files to avoid collisions
-    }
-  });
+// const storage = multer.diskStorage({
+//     destination: function (req, file, cb) {
+//       cb(null, './images'); // Store files in the "uploads" folder
+//     },
+//     filename: function (req, file, cb) {
+//       cb(null, Date.now() + '-' + file.originalname); // Rename files to avoid collisions
+//     }
+//   });
 //middlewares----------------------------
 app.use(cors());
 app.use(express.json());
 // Serve static files from the "images" folder
-app.use('/images', express.static(path.join(__dirname, 'images')));
+// app.use('/images', express.static(path.join(__dirname, 'images')));
 // Initialize Passport Middleware
 app.use(passport.initialize());
 
 //database connection----------------------------
-// const atlasdbURL = process.env.ATLASDB_URL;
-const atlasdbURL = "mongodb://localhost:27017/GiftOfLife";
+const atlasdbURL = process.env.ATLASDB_URL;
+// const atlasdbURL = "mongodb://localhost:27017/GiftOfLife";
 db()
   .then((res) => console.log("Database connection sucessful"))
   .catch((err) => console.log(err));
@@ -92,13 +92,13 @@ app.post(
   wrapAsync(
     async (req, res, next) => {
       const userId = req.user._id;
-      // const photoUrl = req.files.photo[0].path;
+      const photoUrl = req.files.photo[0].path;
       const photoFilename = req.files.photo[0].filename;
-      const photoUrl = `http://localhost:4000/images/${photoFilename}`;
+      // const photoUrl = `http://localhost:4000/images/${photoFilename}`;
   
-      // const citizenshipUrl = req.files.citizenship[0].path;
+      const citizenshipUrl = req.files.citizenship[0].path;
       const citizenshipFilename = req.files.citizenship[0].filename;
-      const citizenshipUrl = `http://localhost:4000/images/${citizenshipFilename}`;
+      // const citizenshipUrl = `http://localhost:4000/images/${citizenshipFilename}`;
   
       const newDonor = new Donor({
         ...req.body,
@@ -128,17 +128,17 @@ app.post(
   wrapAsync(
     async (req, res, next) =>{
       const userId = req.user._id;
-      // const photoUrl = req.files.photo[0].path;
+      const photoUrl = req.files.photo[0].path;
       const photoFilename = req.files.photo[0].filename;
-      const photoUrl = `http://localhost:4000/images/${photoFilename}`;
+      // const photoUrl = `http://localhost:4000/images/${photoFilename}`;
   
-      // const citizenshipUrl = req.files.citizenship[0].path;
+      const citizenshipUrl = req.files.citizenship[0].path;
       const citizenshipFilename = req.files.citizenship[0].filename;
-      const citizenshipUrl = `http://localhost:4000/images/${citizenshipFilename}`;
+      // const citizenshipUrl = `http://localhost:4000/images/${citizenshipFilename}`;
 
-      // const hospitalDocsUrl = req.files.hospitalDocs[0].path;
+      const hospitalDocsUrl = req.files.hospitalDocs[0].path;
       const hospitalDocsFilename = req.files.hospitalDocs[0].filename;
-      const  hospitalDocsUrl = `http://localhost:4000/images/${hospitalDocsFilename}`;
+      // const  hospitalDocsUrl = `http://localhost:4000/images/${hospitalDocsFilename}`;
       
   
 
@@ -213,7 +213,6 @@ app.post("/api/login", (req, res, next)=>{
 );
 
 app.get('/api/auth/verify', passport.authenticate('user-jwt', { session: false }), (req, res) => {
-  console.log("u",req.user);
   res.json({ valid: true,user:req.user }); // Token is valid
 });
 
@@ -231,12 +230,14 @@ app.post("/api/setnewpassword/:id",wrapAsync(
   }
 ));
 
-app.post("/api/create-story", passport.authenticate('user-jwt', { session: false }), upload.single('image'), wrapAsync(
+app.post("/api/create-story", passport.authenticate('user-jwt', { session: false }), upload.single('image'), 
+wrapAsync(
   async (req,res,next)=>{
     const userId = req.user._id;
-    // const url = req.file.path;
+    const url = req.file.path;
     const fileName = req.file.filename;
-    const  url = `http://localhost:4000/images/${fileName}`;
+    // const  url = `http://localhost:4000/images/${fileName}`;
+    
       const isValidStory=await storyValidationSchema.validate({...req.body,image:{url,fileName},userId});
       const newStory=new Story({...req.body,image:{url,fileName},userId})
       await newStory.save();
@@ -290,27 +291,28 @@ app.get('/api/products/search', wrapAsync(
   }
 ));
 
-app.get('/api/:id/profile', wrapAsync(
+app.patch('/api/:id/profile',
+  (req, res, next) => {
+    if (req.headers["content-type"] && req.headers["content-type"].startsWith("multipart/form-data")) {
+      // If the request contains a file, use upload.single()
+      upload.single("profileImage")(req, res, next);
+    } else {
+      // If no file is uploaded, use upload.none() to parse the request body
+      upload.none()(req, res, next);
+    }
+  },
+wrapAsync(
   async(req, res, next) => {
-    const user=await User.findById(req.params.id);
-    res.status(200).json(user); 
-  }
-));
-
-app.post('/api/:id/profile',upload.single("profileImage"),wrapAsync(
-  async(req, res, next) => {
-    console.log(req.file);
-    
     const id =req.params.id;
-    const fileName = req.file.filename;
-    // const url =req.file.path;
-    const url = `http://localhost:4000/images/${fileName}`;
+    const user = await User.findById(id);
+    const fileName = req.file?.filename;
+    const url =req.file?req.file.path:user.profileImage.url;
+    // const url = req.file?`http://localhost:4000/images/${fileName}`:user.profileImage.url;
     
-    const updatedUser=await User.findByIdAndUpdate(id,{profileImage:{url,fileName}});
+    const updatedUser=await User.findByIdAndUpdate(id,{...req.body,profileImage:{url,fileName}});
     res.status(200).json({
       success:true,
       message:"Profile pic updated successfully!",
-      updatedUser
     }) 
   }
 ));
@@ -340,6 +342,46 @@ app.get("/api/recipient-story/:id", wrapAsync(
   async (req,res, next)=>{
     const story=await Story.findOne({userId:req.params.id});
     res.status(200).json({story,success:true}) 
+  }
+));
+
+app.patch('/api/story/:id/edit',
+  (req, res, next) => {
+    if (req.headers["content-type"] && req.headers["content-type"].startsWith("multipart/form-data")) {
+      // If the request contains a file, use upload.single()
+      upload.single("image")(req, res, next);
+    } else {
+      // If no file is uploaded, use upload.none() to parse the request body
+      upload.none()(req, res, next);
+    }
+  },
+wrapAsync(
+  async(req, res, next) => {
+    const id =req.params.id;
+    const story = await Story.findById(id);
+    const fileName = req.file?.filename;
+    const url =req.file?req.file.path:story.image.url;
+    // const url = req.file?`http://localhost:4000/images/${fileName}`:story.image.url;
+    
+    const updatedStory=await Story.findByIdAndUpdate(id,{...req.body,image:{url,fileName}, status:"pending"});
+    res.status(200).json({
+      success:true,
+      message:"Updated Story has benn send for approval!",
+      updatedStory
+    }) 
+  }
+));
+
+app.delete('/api/story/:id/delete',
+wrapAsync(
+  async(req, res, next) => {
+    const id =req.params.id;
+    const deletedStory = await Story.findByIdAndDelete(id);
+    res.status(200).json({
+      success:true,
+      message:"Story has been deleted successfully!",
+      deletedStory
+    }) 
   }
 ));
 
@@ -497,9 +539,9 @@ app.delete("/api/admin/newsandevents/:id/delete", wrapAsync(
 
 app.post("/api/admin/product",upload.single('image'), wrapAsync(
   async (req,res, next)=>{
-    // const url = req.file.path;
+    const url = req.file.path;
     const fileName = req.file.filename;
-    const  url = `http://localhost:4000/images/${fileName}`;
+    // const  url = `http://localhost:4000/images/${fileName}`;
     const newProduct=new Product({...req.body, image:{url,fileName}})
     await newProduct.save()
     res.status(200).json({
@@ -686,8 +728,6 @@ app.post("/api/admin/login", (req, res, next)=>{
 );
 
 app.get('/api/admin/verify', passport.authenticate('admin-jwt', { session: false }), (req, res) => {
-  console.log(req.user);
-  
   res.json({ valid: true,admin:req.user }); // Token is valid
 });
 
@@ -699,6 +739,7 @@ app.all("*", (req, res, next) => {
 app.use((err, req, res, next) => {
   let { statusCode = 500, message = "Some Error Occurred" } = err;
   console.log(statusCode, message);
+  console.log(err);
   res.status(statusCode).json({ message });
 });
 

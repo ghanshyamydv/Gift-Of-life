@@ -4,7 +4,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { AuthContext } from "../../AuthProvider";
 
 const Recipients = () => {
-  const {renderViewAll}=useContext(AuthContext);
+  const {backendUrl,renderViewAll}=useContext(AuthContext);
   const [recipients, setRecipients] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -13,7 +13,7 @@ const Recipients = () => {
   useEffect(() => {
     const fetchRecipients = async () => {
       try {
-        const response = await axios.get("http://localhost:4000/api/recipients");
+        const response = await axios.get(`${backendUrl}/api/recipients`);
         setRecipients(response.data.recipients);
         console.log(response.data.recipients.organsAndTissues);
         

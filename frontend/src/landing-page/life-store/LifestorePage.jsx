@@ -1,16 +1,17 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState,useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router';
 import axios from 'axios';
+import { AuthContext } from '../../AuthProvider';
 
 const LifeStorePage = () => {
-  // Sample product data
+  const {backendUrl}=useContext(AuthContext);
   const navigate=useNavigate();
   const [products, setProducts] = useState([]);
     // Fetch data from the server
     useEffect(() => {
       const fetchData = async () => {
         try {
-          const response = await axios.get("http://localhost:4000/api/admin/product");
+          const response = await axios.get(`${backendUrl}/api/admin/product`);
           setProducts(response.data.products);
         } catch (err) {
           console.log("error :", err);
@@ -33,7 +34,7 @@ const LifeStorePage = () => {
     event.preventDefault();
     const searchTerm=event.target.elements.searchInput.value;
     try {
-      const response = await axios.get("http://localhost:4000/api/products/search", {
+      const response = await axios.get(`${backendUrl}/api/products/search`, {
         params: { q: searchTerm }, // Send search term as a query parameter
       });
       setProducts(response.data.results);

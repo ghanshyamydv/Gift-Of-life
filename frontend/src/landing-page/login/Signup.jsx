@@ -1,9 +1,10 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import axios from 'axios';
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { BiSolidHide, BiSolidShow } from "react-icons/bi";
 import { useNavigate, Link } from 'react-router';
+import { AuthContext } from '../../AuthProvider';
 const signupData={
   username: "",
   email: "",
@@ -13,7 +14,7 @@ const signupData={
 };
 
 function Signup() {
-
+    const {backendUrl}=useContext(AuthContext);
     const [showPass, setShowPass] = useState(false);
     const [responseMessage, setResponseMessage] = useState();
     const navigate=useNavigate();
@@ -46,7 +47,7 @@ function Signup() {
       onSubmit: async (values, actions) => {
           // Sending data to backend
           try {
-            const response = await axios.post("http://localhost:4000/api/signup",values);
+            const response = await axios.post(`${backendUrl}/api/signup`,values);
             setResponseMessage(
               "Data submitted successfully: " + JSON.stringify(response.data)
             );
