@@ -709,7 +709,6 @@ app.post("/api/admin/login", (req, res, next)=>{
       })
     }
 
-    
     const payload={
       username:admin.username,
       id:admin._id
@@ -729,6 +728,69 @@ app.post("/api/admin/login", (req, res, next)=>{
 app.get('/api/admin/verify', passport.authenticate('admin-jwt', { session: false }), (req, res) => {
   res.json({ valid: true,admin:req.user }); // Token is valid
 });
+
+app.get("/api/chart-data/:year",
+  wrapAsync(
+    async(req,res)=>{
+      const year=req.params.year;
+      const startOfYear = new Date(`${year}-01-01T00:00:00.000Z`); // Start of 2025
+      const endOfYear = new Date(`${year}-12-31T23:59:59.999Z`);   // End of 2025
+      
+      const donors = await Donor.find({
+        updatedAt: { $gte: startOfYear, $lte: endOfYear }
+      });
+      const totalDonors = await Donor.find();
+      // const monthNames = [
+      //   "Jan", "Feb", "March", "April", "May", "June", 
+      //   "July", "Aug", "Sep", "Oct", "Nov", "Dec"
+      // ];
+      
+      const donorsByMonth = {"Jan":0, "Feb":0, "Mar":0, "Apr":0, "May":0, "Jun":0, 
+        "Jul":0, "Aug":0, "Sept":0, "Oct":0, "Nov":0, "Dec":0};
+      
+      donors.forEach((each) => {
+        const month = each.updatedAt.toLocaleString("en-IN", { month: "short" });
+        // if (!donorsByMonth[month]) {
+        //   // donorsByMonth[month] = [];
+        //   donorsByMonth[month] = 0;
+        // }
+        // donorsByMonth[month].push(each);
+        donorsByMonth[month]+=1;
+      });
+      
+      //waiting recipients
+      const waitingRecipients = await Recipient.find({
+        updatedAt: { $gte: startOfYear, $lte: endOfYear }, transplant:"pending"
+      });
+      
+      const waitingRecipientsYearlyData = {"Jan":0, "Feb":0, "Mar":0, "Apr":0, "May":0, "Jun":0, 
+        "Jul":0, "Aug":0, "Sept":0, "Oct":0, "Nov":0, "Dec":0};
+      
+        waitingRecipients.forEach((each) => {
+        const month = each.updatedAt.toLocaleString("en-IN", { month: "short" });
+        waitingRecipientsYearlyData[month]+=1;
+      });
+      
+      //successful transplant recipients
+      const successfulTransplant = await Recipient.find({
+        updatedAt: { $gte: startOfYear, $lte: endOfYear }, transplant:"success"
+      });
+      const successfulTransplantYearlyData = {"Jan":0, "Feb":0, "Mar":0, "Apr":0, "May":0, "Jun":0, 
+        "Jul":0, "Aug":0, "Sept":0, "Oct":0, "Nov":0, "Dec":0};
+      
+        successfulTransplant.forEach((each) => {
+        const month = each.updatedAt.toLocaleString("en-IN", { month: "short" });
+        successfulTransplantYearlyData[month]+=1;
+      });
+      
+      //total waiting and transplant
+      const totalWaitingRecipients = await Recipient.find({transplant:"pending"});
+      const totalSuccessfulTransplant = await Recipient.find({transplant:"success"});
+      
+      res.status(200).json({donorsByMonth,waitingRecipientsYearlyData, successfulTransplantYearlyData,totalDonors:totalDonors.length, totalWaitingRecipients:totalWaitingRecipients.length, totalSuccessfulTransplant:totalSuccessfulTransplant.length});
+        
+      }
+))
 
 app.all("*", (req, res, next) => {
   let err = new expressError(400, "Page Not Found!");

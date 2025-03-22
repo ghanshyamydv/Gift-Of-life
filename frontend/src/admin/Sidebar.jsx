@@ -14,7 +14,6 @@ import { AdminAuthContext } from "./AdminAuthProvider";
 
 const Sidebar = () => {
   const {logout, admin}=useContext(AdminAuthContext);
-  console.log("a",admin);
   
   return (
     <div className="d-flex flex-column p-3 bg-dark text-white vh-100 position-fixed" style={{ width: "250px" }}>
