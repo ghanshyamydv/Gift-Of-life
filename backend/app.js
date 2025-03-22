@@ -69,7 +69,7 @@ async function db() {
 //---------------------------------------------
 const upload = multer({ storage });
 
-app.get("/api", (req, res) => {
+app.get("/", (req, res) => {
   const data = {
     greet:"Welcome to gift of life"
   };
@@ -737,8 +737,8 @@ app.all("*", (req, res, next) => {
 
 app.use((err, req, res, next) => {
   let { statusCode = 500, message = "Some Error Occurred" } = err;
-  console.log(statusCode, message);
-  console.log(err);
+  // console.log(statusCode, message);
+  // console.log(err);
   res.status(statusCode).json({ message });
 });
 
