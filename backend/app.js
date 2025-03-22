@@ -69,18 +69,17 @@ async function db() {
 //---------------------------------------------
 const upload = multer({ storage });
 
-// app.get("/api", (req, res) => {
-//   const data = {
-//     name: "mohan",
-//     age: 18,
-//   };
-//   try {
-//     // Simulate data fetching
-//     res.status(200).json(data);
-//   } catch (err) {
-//     next(err); // Pass error to middleware
-//   }
-// });
+app.get("/api", (req, res) => {
+  const data = {
+    greet:"Welcome to gift of life"
+  };
+  try {
+    // Simulate data fetching
+    res.status(200).json(data);
+  } catch (err) {
+    next(err); // Pass error to middleware
+  }
+});
 
 app.post(
   "/api/donor-register",
