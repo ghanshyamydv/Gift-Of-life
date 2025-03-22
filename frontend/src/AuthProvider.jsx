@@ -14,7 +14,7 @@ const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true); // Add loading state
   const [userId, setUserId]=useState("");
   const [registered, setRegistered]=useState(false);
-  const backendUrl="https://gift-of-life.onrender.com";
+  const backendUrl="https://gift-of-life-backend.onrender.com";
   // Function to validate token
   const validateToken = async () => {
     try {
