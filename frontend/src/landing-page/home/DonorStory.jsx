@@ -30,7 +30,7 @@ function RecipientStory() {
         <h1 className='mb-3 d-block fw-bold'>Donors Stories</h1>
         <div className='row no-gutters d-flex'>
             {donorStories.slice().reverse().map((story)=>(
-              <Link to={`/donor-stories/${story._id}`} className="col-4 mt-3 text-decoration-none" key={story._id}>
+              <Link to={`/donor-stories/${story._id}`} className="col-12 col-sm-6 col-md-4 mt-3 text-decoration-none" key={story._id}>
               <div className="card bg-secondary-subtle">
               <img src={story.image.url} className="card-img-top story-img" alt={story.image.filename} style={{height:"260px"}}/>
               <div className="card-body">
