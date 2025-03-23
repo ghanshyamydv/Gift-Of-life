@@ -3,7 +3,7 @@ import React , {useContext, useEffect, useState}from 'react';
 import { Link, useLocation, useNavigate } from 'react-router';
 import { AuthContext } from '../../AuthProvider';
 
-function RecipientStory() {
+function DonorStory() {
   const {backendUrl}=useContext(AuthContext);
   const { pathname } = useLocation();
   const navigate=useNavigate();
@@ -47,4 +47,4 @@ function RecipientStory() {
   )
 }
 
-export default RecipientStory;
+export default DonorStory;
