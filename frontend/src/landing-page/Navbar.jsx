@@ -1,11 +1,11 @@
 import React, { useEffect, useState, useContext } from 'react'
 import { NavLink, useNavigate } from "react-router-dom";
 import { CgProfile } from "react-icons/cg";
-import axios from 'axios';
 import { AuthContext } from '../AuthProvider';
 import { LuLogOut } from "react-icons/lu";
 import { IoSettingsOutline } from "react-icons/io5";
 import { toast } from 'react-toastify';
+import { IoMdMenu,IoMdClose } from "react-icons/io";
 import "./Navbar.css";
 
 import { FaDollarSign } from "react-icons/fa";
@@ -50,6 +50,8 @@ function Navbar() {
     }
   };
 
+  
+  
   useEffect(() => {
     document.addEventListener('click', toggleDropdown);
 
@@ -73,11 +75,25 @@ function Navbar() {
     navigate(`/${userId}/profile`)
   };
 
+  //code for responsiveness 
+const [size, setSize]=useState(window.innerWidth)
+const [isNavbarOpened, setIsNavbarOpened]=useState(false);
+useEffect(()=>{
+  const handleResize=()=>{
+    setSize(window.innerWidth);
+  }
+
+  window.addEventListener("resize", handleResize);
+  return ()=>window.removeEventListener("resize", handleResize);
+  
+},[])
+
   if(loading){
     return <h1 className='text-center'>Loading...</h1>
   }
+  
   return (
-    <div className=''>
+    <div className='nav-container'>
         <ul className="top-nav p-2">
           <li><NavLink className="custom-link top-nav-hover" to="/contribute"><FaDollarSign/> Contribute</NavLink></li>
           <li><NavLink className="custom-link top-nav-hover" to="/donate-life-store"><MdLocalGroceryStore/> Donate Life Store</NavLink></li>
@@ -119,56 +135,61 @@ function Navbar() {
     </div>
           :<NavLink className="custom-link top-nav-hover" to="/login">Login</NavLink>}</li>
         </ul>
-        <img className="web-logo" src="/images/web-logo.png" alt="web-logo" onClick={()=>{navigate("/")}}/>
-        <ul className="bottom-nav">
-          <li><NavLink className="custom-link nav-hover" to="/">Home</NavLink></li>
-          <li><NavLink className="custom-link nav-hover" to="about">About Us</NavLink></li>
-          <li><NavLink className="custom-link nav-hover" to="understand-donation">Understand Donation</NavLink></li>
-          <li><NavLink className="custom-link nav-hover" to="news-event">News & Events</NavLink></li>
-          {/* <ShowRegisterForm user={user} registered={registered}/> */}
-          {user ? (
-        registered ? (
-          user?.category === "donor" ? (
-            <li>
-              <NavLink className="custom-link nav-hover" to="recipients">
-                View all Recipients
-              </NavLink>
-            </li>
-          ) : (
-            <li>
-              <NavLink className="custom-link nav-hover" to="donors" onClick={()=>{setRenderViewAll((prev)=>prev+1)}}>
-                View all Donors
-              </NavLink>
-            </li>
-          )
-        ) : user?.category === "donor" ? (
+        
+        {size < 700 && <div className='d-flex justify-content-between align-items-center ps-2 pe-2' style={{backgroundColor:" #f0eef1", width:"100%"}}><img className="web-logo" src="/images/web-logo.png" alt="web-logo" onClick={()=>{navigate("/")}}/>{isNavbarOpened?<IoMdClose className='fs-1' onClick={()=>setIsNavbarOpened(false)}/>:<IoMdMenu className='fs-1' onClick={()=>setIsNavbarOpened(true)}/>}</div>}
+        {size > 700 && <img className="web-logo" src="/images/web-logo.png" alt="web-logo" onClick={()=>{navigate("/")}}/>}
+        {/* {isNavbarOpened && */}
+        <ul className={`bottom-nav ${isNavbarOpened?"navOpened":"navClosed"}`}>
+        <li><NavLink className="custom-link nav-hover" to="/">Home</NavLink></li>
+        <li><NavLink className="custom-link nav-hover" to="about">About Us</NavLink></li>
+        <li><NavLink className="custom-link nav-hover" to="understand-donation">Understand Donation</NavLink></li>
+        <li><NavLink className="custom-link nav-hover" to="news-event">News & Events</NavLink></li>
+        {/* <ShowRegisterForm user={user} registered={registered}/> */}
+        {user ? (
+      registered ? (
+        user?.category === "donor" ? (
           <li>
-            <NavLink className="custom-link btn btn-success text-white fw-semibold" to="register-donor">
-              Register to be a Donor
+            <NavLink className="custom-link nav-hover" to="recipients">
+              View all Recipients
             </NavLink>
           </li>
         ) : (
           <li>
-            <NavLink className="custom-link btn btn-danger text-white fw-semibold" to="register-recipient">
-              Register as a Recipient
+            <NavLink className="custom-link nav-hover" to="donors" onClick={()=>{setRenderViewAll((prev)=>prev+1)}}>
+              View all Donors
             </NavLink>
           </li>
         )
+      ) : user?.category === "donor" ? (
+        <li>
+          <NavLink className="custom-link btn btn-success text-white fw-semibold" to="register-donor">
+            Register to be a Donor
+          </NavLink>
+        </li>
       ) : (
-        <>
-          <li>
-            <NavLink className="custom-link btn btn-success text-white fw-semibold" to="register-donor">
-              Register to be a Donor
-            </NavLink>
-          </li>
-          <li>
-            <NavLink className="custom-link btn btn-danger text-white fw-semibold" to="register-recipient">
-              Register as a Recipient
-            </NavLink>
-          </li>
-        </>
-      )}
-        </ul>
+        <li>
+          <NavLink className="custom-link btn btn-danger text-white fw-semibold" to="register-recipient">
+            Register as a Recipient
+          </NavLink>
+        </li>
+      )
+    ) : (
+      <>
+        <li>
+          <NavLink className="custom-link btn btn-success text-white fw-semibold" to="register-donor">
+            Register to be a Donor
+          </NavLink>
+        </li>
+        <li>
+          <NavLink className="custom-link btn btn-danger text-white fw-semibold" to="register-recipient">
+            Register as a Recipient
+          </NavLink>
+        </li>
+      </>
+    )}
+      </ul>
+{/* } */}
+        
     </div>
   )
 }

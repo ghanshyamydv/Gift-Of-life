@@ -81,3 +81,41 @@
     box-shadow:0.2rem 0.2rem 0.2rem 0.1rem rgba(0, 0, 0, 0.582) ;
    } */
 
+@media (max-width:700px) {
+  .web-logo{
+    position:static;
+    width: 50px;
+  }
+  .top-nav{
+    margin-bottom: 0px;
+  }
+
+  .top-nav>li{
+    list-style: none;
+    margin-right: 1.5rem;
+  }
+
+   .bottom-nav {
+    display: block;
+    z-index: 2000;
+    height: 100vh;
+    width: 300px; 
+    background-color: #f0eef1;
+  }
+  .navClosed{
+    position: absolute;
+    right: -700px;
+    transition:0.5s;
+  }
+
+  .navOpened{
+    position: absolute;
+    right: 0px;
+    transition:0.5s;
+  }
+
+   .bottom-nav>li{
+    margin-top:1.5rem;
+  } 
+
+} 

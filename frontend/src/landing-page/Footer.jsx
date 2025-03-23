@@ -10,7 +10,7 @@ function Footer() {
   return (
     <div style={{backgroundColor:"rgb(0, 74, 99)"}}>
       <div className="container text-white">
-        <div className="row border-bottom mb-3 mt-3">
+        <div className="row border-bottom mb-3 mt-3 d-flex justify-content-center align-items-center">
           <div className="col">
             <img
               src="/images/web-logo.png"
@@ -18,7 +18,7 @@ function Footer() {
               style={{ width: "120px" }}
             />
           </div>
-          <div className="col"></div>
+          <div className="col-1 col-md-3"></div>
           <div className="col">
             <h3 className="mt-2 mb-3">Follow Us</h3>
             <img src="/images/fb.png" alt="fb-logo" className="social-ac" />
@@ -32,7 +32,7 @@ function Footer() {
           </div>
         </div>
         <div className="row">
-          <div className="col">
+          <div className="col-12 col-md-4">
             <p>
               Gift of Life is a dedicated platform promoting organ donation to
               save and transform lives. Join us in spreading hope by donating
@@ -40,7 +40,7 @@ function Footer() {
               ultimate gift - the gift of life.
             </p>
           </div>
-          <div className="col">
+          <div className="col-12 col-md-4">
             <h3>Important Links</h3>
             <p>
               <Link className="custom-link text-white" to="/">
@@ -58,7 +58,7 @@ function Footer() {
               </Link>
             </p>
           </div>
-          <div className="col">
+          <div className="col-12 col-md-4">
             <h3>Contact & Connect</h3>
             <p>
               <MdAddCall /> 8147806410
