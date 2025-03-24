@@ -126,7 +126,7 @@ const Statistics = () => {
   
   return (
     <div className="container mt-2">
-      <h1 className="text-center mb-4">Gift of Life Dashboard</h1>
+      <h1 className="text-center mb-4">Gift of Life Statistics</h1>
 
       {/* Key Metrics Section */}
       <div className="row mb-4">
