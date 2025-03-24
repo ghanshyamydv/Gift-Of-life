@@ -15,24 +15,33 @@ const ProfilePage = () => {
     const [story , setStory]=useState();
     const [isEditing, setIsEditing]=useState(false);
     const [isStoryEditing, setIsStoryEditing]=useState(false);
+
+    
     const handleImageChange = async (e) => {
-        const file = e.target.files[0];
-        if (file) {
-          const response= toast.promise(
-            axios.patch(`${backendUrl}/api/${id}/profile`,{profileImage:file},
-                {
-                    headers: { "Content-Type": "multipart/form-data"},
-                  }
-              ),
-            {
-              pending: 'Updating Your photo...',
-              success: 'Updated Successfully! 👌',
-              error: 'Updation rejected 🤯'
-            }
-        );
-          updateUser();
-        }
-      };
+      const file = e.target.files[0];
+      if (file) {
+        toast.promise(
+          new Promise((resolve, reject) => {
+            axios
+              .patch(`${backendUrl}/api/${id}/profile`, { profileImage: file }, {
+                headers: { "Content-Type": "multipart/form-data" },
+              })
+              .then((res) => {
+                setTimeout(() => resolve(res), 1000); // Ensures at least 1 second before success
+              })
+              .catch((err) => {
+                setTimeout(() => reject(err), 1000); // Ensures at least 1 second before error
+              });
+          }),
+          {
+            pending: "Updating Your photo...",
+            success: "Updated Successfully! 👌",
+            error: "Updation rejected 🤯",
+          }
+        ).then(() => updateUser()); // Update user data after success
+      }
+    };
+    
 
 
   // Fetch user story based on user category
