@@ -31,6 +31,7 @@ import Buy from './landing-page/life-store/Buy';
 import ThankYouPage from './landing-page/life-store/ThankYouPage';
 import Donors from './landing-page/donor-recipient/Donors';
 import Recipients from './landing-page/donor-recipient/Recipients';
+import Statistics from './landing-page/Statistics';
 import { AdminAuthProvider } from './admin/AdminAuthProvider';
 const AppRoutes = () => {
   const location = useLocation();
@@ -49,6 +50,7 @@ const AppRoutes = () => {
         <Route path="/donate-life-store" element={<LifestorePage />} />
         <Route path="/story" element={<Story />} />
         <Route path="/about" element={<AboutPage />} />
+        <Route path="/statistics" element={<Statistics/>} />
         <Route path="/news-event" element={<NewsEventPage />} />
         <Route path="/understand-donation" element={<UnderstandDonationPage />} />
         <Route path="/register-donor" element={<DonorRegister />} />
@@ -76,6 +78,44 @@ const AppRoutes = () => {
 };
 
 const App = () => {
+  // useEffect(() => {
+  //   const disableZoom = (event) => {
+  //     if (event.touches.length > 1) {
+  //       event.preventDefault(); // Prevent pinch-to-zoom
+  //     }
+  //   };
+
+  //   const disableDoubleTapZoom = (event) => {
+  //     event.preventDefault(); // Prevent double-tap zoom
+  //   };
+
+  //   document.addEventListener("touchmove", disableZoom, { passive: false });
+  //   document.addEventListener("dblclick", disableDoubleTapZoom, { passive: false });
+
+  //   return () => {
+  //     document.removeEventListener("touchmove", disableZoom);
+  //     document.removeEventListener("dblclick", disableDoubleTapZoom);
+  //   };
+  // }, []);
+  // useEffect(() => {
+  //   const disableScroll = (event) => {
+  //     event.preventDefault();
+  //   };
+
+  //   const lockScroll = () => {
+  //     document.body.style.overflow = "hidden"; // Disable scroll
+  //     document.addEventListener("touchmove", disableScroll, { passive: false });
+  //   };
+
+  //   const unlockScroll = () => {
+  //     document.body.style.overflow = ""; // Enable scroll
+  //     document.removeEventListener("touchmove", disableScroll);
+  //   };
+
+  //   return () => {
+  //     unlockScroll(); // Cleanup on component unmount
+  //   };
+  // }, []);
   return (
     <BrowserRouter>
       <AppRoutes />

@@ -31,7 +31,7 @@ function ViewRecipientStory() {
       </div>
 
       <div className="row">
-          <img src={donorStory.image.url} alt={donorStory.image.filename} className='story-image custom-story-image mb-2' style={{width:"100%"}}/>
+          <img src={donorStory.image.url} alt={donorStory.image.filename} className='story-image custom-story-image mb-2'/>
           <p className='fs-6' style={{ whiteSpace: "pre-wrap", wordBreak: "break-word"}}>{donorStory.description}</p>
       </div>
     </div>
