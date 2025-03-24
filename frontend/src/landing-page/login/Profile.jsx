@@ -119,7 +119,7 @@ const handleDeleteStory= async(id)=>{
     <div className="container mt-5">
       {user &&
         <div className="card p-4 shadow-lg">
-        <div className="d-flex justify-content-end"><button className="btn btn-primary" style={{width:"150px"}} onClick={handleEditClick}>
+        <div className="d-flex justify-content-end mb-2"><button className="btn btn-primary" style={{width:"150px"}} onClick={handleEditClick}>
             <FaEdit /> Edit Profile
         </button></div>
         {/* Profile Header */}

@@ -17,7 +17,7 @@ const EditProfileModal = ({
     return (
         <div className="custom-modal-overlay">
             <div className="custom-modal-content">
-                <h4 className="text-primary mt-5">Edit Profile</h4>
+                <h4 className="text-primary mt-2">Edit Profile</h4>
                 <form onSubmit={handleSubmit}>
                     <div className="form-group">
                         <div className=" d-flex justify-content-center">
