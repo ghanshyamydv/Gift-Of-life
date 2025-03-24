@@ -29,16 +29,16 @@ function RecipientStories() {
     <div className='container mt-5 mb-5'>
         <h1 className='mb-3 d-block fw-bold'>Recipient Stories</h1>
         <div className="row">
-          <div className="col-8">
+          <div className="col-12 col-md-8">
           <p className="text-muted mb-4">
               Tell us about your journey. Why did you choose the gift of life? How has it impacted you and others?
             </p>
           </div>
-          <div className="col-4"><button className="btn btn-primary btn-lg" onClick={()=>{navigate("/create-story")}}>Share Your Story</button></div>
+          <div className="col-12 col-md-4"><button className="btn btn-primary btn-lg" onClick={()=>{navigate("/create-story")}}>Share Your Story</button></div>
         </div>
         <div className='row no-gutters d-flex'>
             {recipientStories.slice().reverse().map((story)=>(
-              <Link to={`/recipient-stories/${story._id}`} className="col-4 mt-3 text-decoration-none" key={story._id}>
+              <Link to={`/recipient-stories/${story._id}`} className="col-12 col-sm-6 col-md-4 mt-3 text-decoration-none" key={story._id}>
               <div className="card bg-secondary-subtle">
               <img src={story.image.url} className="card-img-top story-img" alt={story.image.filename} style={{height:"260px"}}/>
               <div className="card-body">

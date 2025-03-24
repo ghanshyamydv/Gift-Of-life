@@ -26,7 +26,7 @@ function ViewNewsAndEvent() {
     <div className='container'>
       <div className="row">
         {newsAndEvent && 
-        <div className="col-7">
+        <div className="col-12 col-md-7">
         <h1 className='mt-2 mb-4'>{newsAndEvent.title}</h1>
         {newsAndEvent.category==="event" && 
         <div>

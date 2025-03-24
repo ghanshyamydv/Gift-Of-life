@@ -2,6 +2,7 @@
 import React ,{useContext, useEffect, useState} from 'react'
 import { useParams } from 'react-router';
 import axios from 'axios';
+import "./Story.css";
 import { AuthContext } from '../../AuthProvider';
 
 function ViewRecipientStory() {
@@ -26,19 +27,12 @@ function ViewRecipientStory() {
       {donorStory &&
       <div className="container">
       <div className="row">
-        <div className="col-8">
         <h1 className='mt-2 mb-4'>{donorStory.title}</h1>
-        </div>
       </div>
 
       <div className="row">
-        <div className="col-8">
+          <img src={donorStory.image.url} alt={donorStory.image.filename} className='story-image custom-story-image mb-2' style={{width:"100%"}}/>
           <p className='fs-6' style={{ whiteSpace: "pre-wrap", wordBreak: "break-word"}}>{donorStory.description}</p>
-        </div>
-
-        <div className="col-4">
-          <img src={donorStory.image.url} alt={donorStory.image.filename} className='story-image' style={{width:"100%"}}/>
-        </div>
       </div>
     </div>
       }
