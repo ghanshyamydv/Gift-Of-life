@@ -115,7 +115,7 @@ useEffect(()=>{
       {/* Dropdown Menu */}
       <ul
         className={`dropdown-menu ${isOpen ? "show" : ""}`}
-        style={{right:"auto", left:"0", transform: "translateX(-80%)"}}
+        style={{right:"auto", left:"0", transform: "translateX(-80%)", zIndex:"10000"}}
         aria-labelledby="dropdownMenuButton"
       >
         <li className="dropdown-item">
@@ -141,6 +141,7 @@ useEffect(()=>{
         {/* {isNavbarOpened && */}
         <ul className={`bottom-nav ${isNavbarOpened?"navOpened":"navClosed"}`}>
         <li><NavLink className="custom-link nav-hover" to="/">Home</NavLink></li>
+        <li><NavLink className="custom-link nav-hover" to="/statistics">Statistics</NavLink></li>
         <li><NavLink className="custom-link nav-hover" to="about">About Us</NavLink></li>
         <li><NavLink className="custom-link nav-hover" to="understand-donation">Understand Donation</NavLink></li>
         <li><NavLink className="custom-link nav-hover" to="news-event">News & Events</NavLink></li>
