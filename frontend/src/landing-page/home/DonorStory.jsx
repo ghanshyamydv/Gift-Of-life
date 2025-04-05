@@ -27,12 +27,12 @@ function DonorStory() {
   },[pathname])
   return (
     <div className='container mt-5 mb-5'>
-        <h1 className='mb-3 d-block fw-bold'>Donors Stories</h1>
+        <h1 className='mb-3 d-block fw-bold'>Donor Stories</h1>
         <div className='row no-gutters d-flex'>
             {donorStories.slice().reverse().map((story)=>(
               <Link to={`/donor-stories/${story._id}`} className="col-12 col-sm-6 col-md-4 mt-3 text-decoration-none" key={story._id}>
               <div className="card bg-secondary-subtle">
-              <img src={story.image.url} className="card-img-top story-img" alt={story.image.filename} style={{height:"260px"}}/>
+              <img src={story.image.url} className="card-img-top story-img" alt={story.image.filename} style={{ height: "280px", objectFit:"cover", objectPosition:"center" }}/>
               <div className="card-body">
                   <h5 className="card-title">{story.title}</h5>
                   <p className="card-text">{story.description.slice(0,100)}</p>

@@ -40,7 +40,7 @@ function RecipientStories() {
             {recipientStories.slice().reverse().map((story)=>(
               <Link to={`/recipient-stories/${story._id}`} className="col-12 col-sm-6 col-md-4 mt-3 text-decoration-none" key={story._id}>
               <div className="card bg-secondary-subtle">
-              <img src={story.image.url} className="card-img-top story-img" alt={story.image.filename} style={{height:"260px"}}/>
+              <img src={story.image.url} className="card-img-top story-img" alt={story.image.filename} style={{ height: "280px", objectFit:"cover", objectPosition:"center" }}/>
               <div className="card-body">
                   <h5 className="card-title">{story.title}</h5>
                   <p className="card-text">{story.description.slice(0,100)}</p>

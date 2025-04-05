@@ -197,7 +197,7 @@ const handleDeleteStory= async(id)=>{
                   src={story?.image?.url}
                   className="card-img-top story-img"
                   alt={story?.image?.filename || "Story Image"}
-                  style={{ height: "260px" }}
+                  style={{ height: "280px", objectFit:"cover", objectPosition:"center" }}
                 />
                 <div className="card-body pb-0">
                   <h5 className="card-title">{story?.title}</h5>
@@ -217,9 +217,9 @@ const handleDeleteStory= async(id)=>{
         </div>
 
         {/* Organ Donation History */}
-        <div className="mt-4">
+        {/* <div className="mt-4">
             <h4 className="text-success">Donation History</h4>
-            <ul className="list-group">
+            <ul className="list-group"> */}
             {/* {user.organsDonated.length > 0 ? (
                 user.organsDonated.map((organ, index) => (
                 <li key={index} className="list-group-item">
@@ -231,8 +231,8 @@ const handleDeleteStory= async(id)=>{
                 No organs donated yet.
                 </li>
             )} */}
-            </ul>
-        </div>
+            {/* </ul>
+        </div> */}
         </div>
       }
     </div>

@@ -13,7 +13,10 @@ import ReviewRecipients from "./pages/ReviewRecipients";
 import AdminLogin from "./AdminLogin";
 import { AdminAuthContext } from "./AdminAuthProvider";
 function AdminPage() {
-  const {admin, setAdmin, isLoggedIn}=useContext(AdminAuthContext);
+  const {admin, setAdmin, isLoggedIn, loading}=useContext(AdminAuthContext);
+  if(loading){
+    return <h1 className="text-center">Loading...</h1>
+  }
   if(!isLoggedIn){
    return <AdminLogin/>
   }

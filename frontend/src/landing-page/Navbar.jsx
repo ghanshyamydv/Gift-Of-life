@@ -151,13 +151,13 @@ useEffect(()=>{
         user?.category === "donor" ? (
           <li>
             <NavLink className="custom-link nav-hover" to="recipients">
-              View all Recipients
+              Waiting Recipients
             </NavLink>
           </li>
         ) : (
           <li>
             <NavLink className="custom-link nav-hover" to="donors" onClick={()=>{setRenderViewAll((prev)=>prev+1)}}>
-              View all Donors
+              Available Donors
             </NavLink>
           </li>
         )

@@ -85,7 +85,7 @@ const NewsAndEvent = () => {
 
   return (
     <div className="container mt-5">
-      <h1 className="text-center mb-4">Admin Dashboard</h1>
+      <h1 className="text-center mb-4">Manage News & Events</h1>
       <div className="text-center mb-4">
         <button className="btn btn-primary mx-2" onClick={handleOpenModal}>
           Add News/Event

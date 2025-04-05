@@ -83,7 +83,7 @@ app.get("/", (req, res) => {
 
 app.post(
   "/api/donor-register",
-  passport.authenticate('jwt', { session: false }),
+  passport.authenticate('user-jwt', { session: false }),
   upload.fields([
     { name: "photo", maxCount: 1 }, // Field name for photo, max 1 file
     { name: "citizenship", maxCount: 1 }, // Field name for citizenship, max 1 file
@@ -117,8 +117,8 @@ app.post(
 );
 
 app.post(
-  "/api/recipient-register",
-  passport.authenticate('jwt', { session: false }),
+"/api/recipient-register",
+  passport.authenticate('user-jwt', { session: false }),
     upload.fields([
     { name: "photo", maxCount: 1 },          // Field name for photo, max 1 file
     { name: "citizenship", maxCount: 1 },    // Field name for citizenship, max 1 file
@@ -344,6 +344,7 @@ app.get("/api/recipient-story/:id", wrapAsync(
   }
 ));
 
+
 app.patch('/api/story/:id/edit',
   (req, res, next) => {
     if (req.headers["content-type"] && req.headers["content-type"].startsWith("multipart/form-data")) {
@@ -360,7 +361,6 @@ wrapAsync(
     const story = await Story.findById(id);
     const fileName = req.file?.filename;
     const url =req.file?req.file.path:story.image.url;
-    // const url = req.file?`http://localhost:4000/images/${fileName}`:story.image.url;
     
     const updatedStory=await Story.findByIdAndUpdate(id,{...req.body,image:{url,fileName}, status:"pending"});
     res.status(200).json({
@@ -383,6 +383,32 @@ wrapAsync(
     }) 
   }
 ));
+
+app.delete('/api/donor/:id/delete',
+  wrapAsync(
+    async(req, res, next) => {
+      const id =req.params.id;
+      const deletedDonor = await Donor.findByIdAndDelete(id);
+      res.status(200).json({
+        success:true,
+        message:"Application has been deleted successfully!",
+        deletedDonr
+      }) 
+    }
+  ));
+
+  app.delete('/api/recipient/:id/delete',
+    wrapAsync(
+      async(req, res, next) => {
+        const id =req.params.id;
+        const deletedRecipient = await Recipient.findByIdAndDelete(id);
+        res.status(200).json({
+          success:true,
+          message:"Application has been deleted successfully!",
+          deletedRecipient
+        }) 
+      }
+    ));
 
 app.post('/api/:id/buy', wrapAsync(
   async(req, res, next) => {
@@ -412,14 +438,14 @@ app.post('/api/:id/buy', wrapAsync(
 
 app.get("/api/donors", wrapAsync(
   async (req,res, next)=>{
-    const donors=await Donor.find({status:"approved"});
+    const donors=await Donor.find({status:"approved",transplant:"pending"});
     res.status(200).json({donors,success:true}) 
   }
 ));
 
 app.get("/api/recipients", wrapAsync(
   async (req,res, next)=>{
-    const recipients=await Recipient.find({status:"approved"});
+    const recipients=await Recipient.find({status:"approved",transplant:"pending"});
     res.status(200).json({recipients,success:true}) 
   }
 ));
@@ -737,7 +763,7 @@ app.get("/api/chart-data/:year",
       const endOfYear = new Date(`${year}-12-31T23:59:59.999Z`);   // End of 2025
       
       const donors = await Donor.find({
-        updatedAt: { $gte: startOfYear, $lte: endOfYear }
+        createdAt: { $gte: startOfYear, $lte: endOfYear }
       });
       const totalDonors = await Donor.find();
       // const monthNames = [
@@ -749,7 +775,7 @@ app.get("/api/chart-data/:year",
         "Jul":0, "Aug":0, "Sept":0, "Oct":0, "Nov":0, "Dec":0};
       
       donors.forEach((each) => {
-        const month = each.updatedAt.toLocaleString("en-IN", { month: "short" });
+        const month = each.createdAt.toLocaleString("en-IN", { month: "short" });
         // if (!donorsByMonth[month]) {
         //   // donorsByMonth[month] = [];
         //   donorsByMonth[month] = 0;
@@ -760,26 +786,26 @@ app.get("/api/chart-data/:year",
       
       //waiting recipients
       const waitingRecipients = await Recipient.find({
-        updatedAt: { $gte: startOfYear, $lte: endOfYear }, transplant:"pending"
+        createdAt: { $gte: startOfYear, $lte: endOfYear }, transplant:"pending"
       });
       
       const waitingRecipientsYearlyData = {"Jan":0, "Feb":0, "Mar":0, "Apr":0, "May":0, "Jun":0, 
         "Jul":0, "Aug":0, "Sept":0, "Oct":0, "Nov":0, "Dec":0};
       
         waitingRecipients.forEach((each) => {
-        const month = each.updatedAt.toLocaleString("en-IN", { month: "short" });
+        const month = each.createdAt.toLocaleString("en-IN", { month: "short" });
         waitingRecipientsYearlyData[month]+=1;
       });
       
       //successful transplant recipients
       const successfulTransplant = await Recipient.find({
-        updatedAt: { $gte: startOfYear, $lte: endOfYear }, transplant:"success"
+        createdAt: { $gte: startOfYear, $lte: endOfYear }, transplant:"success"
       });
       const successfulTransplantYearlyData = {"Jan":0, "Feb":0, "Mar":0, "Apr":0, "May":0, "Jun":0, 
         "Jul":0, "Aug":0, "Sept":0, "Oct":0, "Nov":0, "Dec":0};
       
         successfulTransplant.forEach((each) => {
-        const month = each.updatedAt.toLocaleString("en-IN", { month: "short" });
+        const month = each.createdAt.toLocaleString("en-IN", { month: "short" });
         successfulTransplantYearlyData[month]+=1;
       });
       

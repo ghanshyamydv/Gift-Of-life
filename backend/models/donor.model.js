@@ -144,6 +144,11 @@ status: {
   enum: ['pending', 'approved', 'rejected'], // Order status
   default: 'pending',
 },
+transplant:{
+  type: String,
+  enum: ['pending', 'success'], // Order status
+  default: 'pending',
+}
 }, { timestamps: true });
 
 const Donor = mongoose.model("Donor", donorSchema);

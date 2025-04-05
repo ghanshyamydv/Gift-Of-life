@@ -11,7 +11,7 @@ const storyValidationSchema = yup.object().shape({
     .string()
     .required('Description is required')
     .min(10, 'Description must be at least 10 characters')
-    .max(1000, 'Description cannot exceed 1000 characters'),
+    .max(5000, 'Description cannot exceed 5000 characters'),
 
   image: yup.object().shape({
     fileName: yup.string().required('File name is required'),

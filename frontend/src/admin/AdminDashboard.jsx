@@ -36,6 +36,9 @@ const AdminDashboard = () => {
   const [totalDonors, setTotalDonors]=useState(0);
   const [totalWaitingRecipients, setTotalWaitingRecipients]=useState(0);
   const [totalSuccessfulTransplant ,setTotalSuccessfulTransplant ]=useState(0);
+//   const totalDonors = 450;
+// const totalWaitingRecipients = 1350;
+// const totalSuccessfulTransplant = 450;
   useEffect(()=>{
     const fetchDonorData=async()=>{
       try{
@@ -53,7 +56,6 @@ const AdminDashboard = () => {
     fetchDonorData();
   },[year])
   
-  // Sample data
   const donorsData = {
     labels:Object.keys(donorYearlyData).length!==0?Object.keys(donorYearlyData):["Jan", "Feb", "Mar", "Apr", "May", "Jun", "July", "Aug", "Sep", "Oct", "Nov", "Dec"],
     datasets: [
@@ -65,7 +67,7 @@ const AdminDashboard = () => {
     ],
   };
 
-  // // Sample data
+  // Sample data
   // const donorsData = {
   //   labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "July", "Aug", "Sep", "Oct", "Nov", "Dec"],
   //   datasets: [
@@ -109,6 +111,17 @@ const AdminDashboard = () => {
     ],
   };
 
+  // const successRateData = {
+  //   labels: ["Successful Transplants", "Waiting for Organs"],
+  //   datasets: [
+  //     {
+  //       data: [144, 216], // Example data
+  //       backgroundColor: ["rgba(75, 192, 192, 0.6)", "rgba(255, 99, 132, 0.6)"],
+  //     },
+  //   ],
+  // };
+  
+
   const total=totalWaitingRecipients+totalSuccessfulTransplant;
   const successRateData = {
     labels: ["Successful Transplants", "Waiting for Organs"],
@@ -123,10 +136,9 @@ const AdminDashboard = () => {
   const currentYear = new Date().getFullYear();
   const startYear = 2015; // Adjust as needed
   const years = Array.from({ length: currentYear - startYear + 1 }, (_, i) => currentYear - i);
-  
   return (
     <div className="container mt-2">
-      <h1 className="text-center mb-4">Gift of Life Dashboard</h1>
+      <h1 className="text-center mb-4">Admin Dashboard</h1>
 
       {/* Key Metrics Section */}
       <div className="row mb-4">

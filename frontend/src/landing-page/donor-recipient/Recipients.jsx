@@ -39,7 +39,7 @@ const Recipients = () => {
     event.preventDefault();
     const searchTerm=event.target.elements.searchInput.value;
     try {
-      const response = await axios.get("http://localhost:4000/api/recipients/search", {
+      const response = await axios.get(`${backendUrl}/api/recipients/search`, {
         params: { q: searchTerm }, // Send search term as a query parameter
       });
       
@@ -51,7 +51,7 @@ const Recipients = () => {
 
   return (
     <div className="container mt-3">
-      <h1 className="text-center mb-4">Recipients List</h1>
+      <h1 className="text-center mb-4">Waiting Recipients</h1>
       <form className='d-flex justify-content-center mb-5' onSubmit={handleSearch}>
         <input className='form-control border-primary' style={{width:"300px"}} type="text" name='searchInput'/>
         <button type='submit' className='btn btn-outline-primary ms-2'>Search</button>
@@ -79,6 +79,9 @@ const Recipients = () => {
                   {recipient.organsAndTissues[0]?.selectedOrgans.join(", ")},{" "}
                   {recipient.organsAndTissues[0]?.otherOrganTissue}
                 </p>
+                <p className="card-text fs-6">
+              <strong>Email: </strong>{recipient.email}
+              </p>
                 {/* Uncomment and use these fields if needed */}
                 {/* <p className="card-text fs-6">
                   <strong>Email:</strong> {recipient.email}

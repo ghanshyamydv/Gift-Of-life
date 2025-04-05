@@ -48,7 +48,7 @@ const DonorsPage = () => {
   }
   return (
     <div className="container mt-3">
-      <h1 className="text-center mb-4">Donors List</h1>
+      <h1 className="text-center mb-4">Available Donors</h1>
       <form className='d-flex justify-content-center mb-5' onSubmit={handleSearch}>
         <input className='form-control border-primary' style={{width:"300px"}} type="text" name='searchInput'/>
         <button type='submit' className='btn btn-outline-primary ms-2'>Search</button>
@@ -76,8 +76,9 @@ const DonorsPage = () => {
               {donor.organsAndTissues[0]?.selectedOrgans.join(", ")},{" "}
               {donor.organsAndTissues[0]?.otherOrganTissue}
               </p>
-                  <div className="d-flex justify-content-between">
-                  </div>
+              <p className="card-text fs-6">
+              <strong>Email: </strong>{donor.email}
+              </p>
               </div>
           </div>
       </div>

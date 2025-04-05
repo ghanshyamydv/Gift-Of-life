@@ -100,8 +100,7 @@ function RecipientRegister() {
     <div className="container">
       <h1>Register a decision to be a Recipient </h1>
       <p>
-        Your decision to recipient can save and transform lives. Thank you for
-        making this selfless choice. Fields marked * are mandatory
+      Your decision to receive a donation can save and transform your life. Thank you for taking this important step. Fields marked with * are mandatory.
       </p>
       <h3>Personal Information</h3>
       <hr />
@@ -367,7 +366,7 @@ function RecipientRegister() {
             <h4>I Want to receive *</h4>
             <div className="form-check">
               <div className="pt-2">
-                <p className="">Organs a Living Recipient Can Donate:</p>
+                <p className="">Organs a Recipient Can Receive:</p>
                 <div className="ms-4">
                   <input
                     className="form-check-input border-dark"
@@ -450,7 +449,7 @@ function RecipientRegister() {
                   </label>
                 </div>
 
-                <p className="mt-3">Tissue a Living Recipient Can Donate:</p>
+                <p className="mt-3">Tissues a Recipient Can Receive:</p>
                 <div className="ms-4">
                   <input
                     className="form-check-input border-dark"
@@ -618,25 +617,16 @@ function RecipientRegister() {
             </label>
             {values.consent && (
               <ul>
-                <li>
-                  I am of sound mind and voluntarily wish to donate my organs
-                  and tissues upon my death.
-                </li>
-                <li>
-                  I understand that this decision is revocable at any time, and
-                  I can withdraw my consent by notifying the appropriate
-                  authority.
-                </li>
-                <li>
-                  I have discussed this decision with my family or loved ones to
-                  ensure they are aware of my wishes.{" "}
-                </li>
-                <li>
-                  {" "}
-                  I authorize the medical institution or relevant authority to
-                  act upon this document in accordance with local laws and
-                  regulations.{" "}
-                </li>
+                <li>I am of sound mind and voluntarily wish to receive an organ or tissue transplant.</li>
+
+                <li>I understand that my request is subject to medical evaluation, availability, and ethical guidelines.</li>
+
+                <li>I acknowledge that the transplantation process involves medical procedures, risks, and legal considerations.</li>
+
+                <li>I have discussed this decision with my family or loved ones to ensure they are aware of my need for a transplant.</li>
+
+                <li>I authorize the medical institution or relevant authority to process my request in accordance with local laws and regulations.</li>
+
               </ul>
             )}
             {errors.consent && touched.consent ? (
@@ -681,9 +671,7 @@ function RecipientRegister() {
 
           <h3>Witness/Authorized Representative *</h3>
           <p>
-            A witness is required to confirm the donor’s consent. This could be
-            a family member, legal representative, or someone else authorized
-            under local laws.
+          A witness is required to confirm the recipient’s consent. This could be a family member, legal representative, or someone else authorized under local laws.
           </p>
           <div className="col-7 mb-3">
             <label htmlFor="emergency-fullname" className="form-label">
@@ -938,7 +926,7 @@ function RecipientRegister() {
             className="btn btn-success fs-5 mt-4 mb-5"
             style={{ width: "300px" }}
           >
-            Submit-Yes, I want to donate
+            Submit-Yes, I want to receive
           </button>
         </div>
       </form>

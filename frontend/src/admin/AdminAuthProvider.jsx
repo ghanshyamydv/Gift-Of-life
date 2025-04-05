@@ -12,6 +12,7 @@ const AdminAuthProvider = ({ children }) => {
   const [admin, setAdmin] = useState(null); // Initialize admin as null
   const [loading, setLoading] = useState(true); // Add loading state
   const backendUrl="https://gift-of-life-backend.onrender.com";
+  // const backendUrl="http://localhost:4000";
   // Function to validate token
   const validateToken = async () => {
     try {
