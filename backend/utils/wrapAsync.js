@@ -9,12 +9,12 @@
             //   err.message="Email Already Exist!"
             // } 
 
-              if(err.message.includes("Cast to ObjectId failed for value")){
-                err.message="You have done some changes in url click on profile setting to see your profile."
-              }
-              if(err){
-                err.statusCode=400;
-              }
+              // if(err.message.includes("Cast to ObjectId failed for value")){
+              //   err.message="You have done some changes in url click on profile setting to see your profile."
+              // }
+              // if(err){
+              //   err.statusCode=400;
+              // }
             next(err)
         })
     }

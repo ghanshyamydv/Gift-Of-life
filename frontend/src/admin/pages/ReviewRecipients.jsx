@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { AdminAuthContext } from '../AdminAuthProvider';
-
+import Recipients from './Recipients';
 const ReviewRecipients = () => {
     const {backendUrl}=useContext(AdminAuthContext);
     const [recipients, setRecipients] = useState([]);
@@ -43,7 +43,7 @@ const ReviewRecipients = () => {
 
     return (
         <div className="container mt-3">
-            <h1 className="text-center mb-4">Review Stories</h1>
+            <h1 className="text-center mb-4">Review Recipients</h1>
             <div className="row">
                 {recipients.length===0 && <p className='text-success mt-3 text-center'>There are no pending recipients.</p>}
                 {recipients.map((recipient) => (
@@ -93,6 +93,7 @@ const ReviewRecipients = () => {
                     </div>
                 ))}
             </div>
+            <Recipients/>
         </div>
     );
 };

@@ -50,7 +50,8 @@ const ResetPassword = () => {
           },2000)
           
     }catch(err){
-        setMessage("Invalid OTP. Please try again.");
+      setMessage("");
+        setErrorMessage("Invalid OTP. Please try again.");
     }finally{
       setTimeout(()=>{
         setLoading(false);
@@ -58,6 +59,8 @@ const ResetPassword = () => {
     }
   };
 
+
+  
   return (
     <div className="container mt-5">
       <div className="row justify-content-center">

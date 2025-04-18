@@ -8,6 +8,8 @@ let userStorage="";
 const sendOtp=async(req,res)=>{
     // 1️⃣ **If OTP verification is requested**
     if (req.body.otp) {
+        console.log(req.body.otp, typeof(req.body.otp));
+        
         if (otpStorage.otp === req.body.otp) {
             otpStorage.otp=null; // Remove OTP after successful verification
             return res.status(200).json({
@@ -94,7 +96,7 @@ const sendOtp=async(req,res)=>{
                 if(error){
                     throw error;
                 }
-                console.log(emailResponse);
+                // console.log(emailResponse);
                 if(otpStorage.otp){
                     setTimeout(()=>{
                         otpStorage.otp=null;                        

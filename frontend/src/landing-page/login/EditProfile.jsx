@@ -1,6 +1,6 @@
 import { useState } from "react";
 import "./EditProfile.css";
-import { FaCamera, FaEdit } from "react-icons/fa";
+import { FaCamera} from "react-icons/fa";
 const EditProfileModal = ({ 
     isOpen,
     onClose,

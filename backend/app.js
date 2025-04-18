@@ -33,6 +33,8 @@ import recipientApproval from "./emails/recipientApprovalEmail.js";
 import recipientApproved from "./emails/recipientApprovedEmail.js";
 import recipientRejection from "./emails/recipientRejectedEmail.js";
 import orderConfirmationEmail from './emails/orderConfirmation.js';
+import confirmDonation from "./emails/donorTransplantConfirmOtp.js";
+import confirmRecipient from "./emails/recipientTransplantConfirmationOtp.js";
 import Admin from "./models/admin.model.js";
 const app = express();
 
@@ -650,7 +652,6 @@ app.get("/api/admin/review-donors", wrapAsync(
   }
 ));
 
-
 app.patch("/api/admin/review-donor/:id/approve", wrapAsync(
   async (req,res, next)=>{
     const approvedDonor=await Donor.findByIdAndUpdate(req.params.id, {status:"approved"});
@@ -711,10 +712,11 @@ app.patch("/api/admin/review-recipient/:id/reject", wrapAsync(
   }
 ));
 
-// app.get("/api/admin/signup",async (req,res,next)=>{
-//   const newAdmin=new Admin({username:"ghanshyam",password:"Ghanu@9862#",email:"yghanu9819@gmail.com"});
+// app.get("/api/admin/signup",wrapAsync(async (req,res,next)=>{
+//   const newAdmin=new Admin({username:"aanand",password:"Aanand@123#",email:"iaanandmandal@gmail.com"});
 //   await newAdmin.save();
-// })
+// }))
+
 app.post("/api/admin/login", (req, res, next)=>{
   
   Admin.findOne({username:req.body.username})
@@ -757,7 +759,7 @@ app.get('/api/admin/verify', passport.authenticate('admin-jwt', { session: false
 
 app.get("/api/chart-data/:year",
   wrapAsync(
-    async(req,res)=>{
+    async(req,res, next)=>{
       const year=req.params.year;
       const startOfYear = new Date(`${year}-01-01T00:00:00.000Z`); // Start of 2025
       const endOfYear = new Date(`${year}-12-31T23:59:59.999Z`);   // End of 2025
@@ -818,6 +820,60 @@ app.get("/api/chart-data/:year",
       }
 ))
 
+const otpStorage={otp:null};
+app.post("/api/confirm-donor/transplant",wrapAsync(
+  async (req,res,next)=>{
+    // Generate a random 6-digit OTP
+    const generateOTP = () => {
+      return Math.floor(100000 + Math.random() * 900000).toString();
+    };
+    const newOtp=generateOTP();
+    otpStorage.otp=newOtp;
+    const {donorId, recipientId, organsDonated}=req.body;
+    const donorDetail=await Donor.findById(donorId);
+    const recipientDetail=await Recepient.findById(recipientId);
+    await sendMail(confirmDonation({email:donorDetail.email, donorName:donorDetail.fullName, organName:organsDonated, recipientName:recipientDetail.fullName, otp:newOtp}));
+    res.status(200).json({message:`OTP send successfully to this ${donorDetail.email}`})
+  }
+))
+
+app.post("/api/confirm-donor/transplant-otp", wrapAsync(async (req,res, next)=>{
+  if(otpStorage.otp===req.body.otp){
+    await Donor.findByIdAndUpdate(req.body.id,{transplant:"successful"});
+    otpStorage.otp=null;
+    res.status(200).json({message:"OTP verified successfully!"});
+  }
+    res.status(400).json({message:"Invalid OTP!"});
+  }
+))
+
+app.post("/api/confirm-recipient/transplant",wrapAsync(
+  async (req,res,next)=>{
+    // Generate a random 6-digit OTP
+    
+    const generateOTP = () => {
+      return Math.floor(100000 + Math.random() * 900000).toString();
+    };
+    const newOtp=generateOTP();
+    otpStorage.otp=newOtp;
+    const {donorId, recipientId, organsDonated}=req.body;
+    const donorDetail=await Donor.findById(donorId);
+    const recipientDetail=await Recepient.findById(recipientId);
+    await sendMail(confirmRecipient({email:recipientDetail.email, donorName:donorDetail.fullName, organName:organsDonated, recipientName:recipientDetail.fullName, otp:newOtp}));
+    res.status(200).json({message:`OTP send successfully to this ${recipientDetail.email}`})
+  }
+))
+
+app.post("/api/confirm-recipient/transplant-otp", wrapAsync(async (req,res, next)=>{
+  if(otpStorage.otp===req.body.otp){
+    await Recipient.findByIdAndUpdate(req.body.id,{transplant:"successful"});
+    otpStorage.otp=null;
+    res.status(200).json({message:"OTP verified successfully!"});
+  }
+    res.status(400).json({message:"Invalid OTP!"});
+  }
+))
+
 app.all("*", (req, res, next) => {
   let err = new expressError(400, "Page Not Found!");
   next(err);
@@ -825,7 +881,7 @@ app.all("*", (req, res, next) => {
 
 app.use((err, req, res, next) => {
   let { statusCode = 500, message = "Some Error Occurred" } = err;
-  // console.log(statusCode, message);
+  console.log(statusCode, message);
   // console.log(err);
   res.status(statusCode).json({ message });
 });

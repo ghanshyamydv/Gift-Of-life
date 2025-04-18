@@ -158,6 +158,10 @@ transplant:{
   enum: ['pending', 'success'], // Order status
   default: 'pending',
 }
+,organDonor:{
+  type: mongoose.Schema.Types.ObjectId,
+  ref: 'Donor ',
+}
 }, { timestamps: true });
 
 const Recipient = mongoose.model("Recipient", recipientSchema);
