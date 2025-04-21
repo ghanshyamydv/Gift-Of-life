@@ -599,6 +599,41 @@ app.get("/api/admin/product/:id", wrapAsync(
   }
 ))
 
+app.patch("/api/admin/product/:id/edit", 
+
+  (req, res, next) => {
+    if (req.headers["content-type"] && req.headers["content-type"].startsWith("multipart/form-data")) {
+      // If the request contains a file, use upload.single()
+      upload.single("image")(req, res, next);
+      
+    } else {
+      // If no file is uploaded, use upload.none() to parse the request body
+      upload.none()(req, res, next);
+    }
+  },
+wrapAsync(
+  async(req, res, next) => {
+    const id =req.params.id;
+    const product = await Product.findById(id);
+    const fileName = req.file?.filename;
+    const url =req.file?req.file.path:product.image.url;
+    
+    const updatedProduct=await Product.findByIdAndUpdate(id,{...req.body,image:{url,fileName}});
+    res.status(200).json({
+      success:true,
+      message:`${updatedProduct.name} has been updated successfully!`,
+    }) 
+  }
+)
+)
+
+app.delete("/api/admin/product/:id/delete",wrapAsync(
+  async (req,res,next)=>{
+    const {id}=req.params;
+    const deletedItem =await Product.findByIdAndDelete(id);
+    res.status(200).json({message:`${deletedItem.name} has been deleted successfully`})
+  }
+))
 
 app.get("/api/admin/review-stories", wrapAsync(
   async (req,res, next)=>{

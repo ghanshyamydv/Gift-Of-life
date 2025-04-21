@@ -43,7 +43,7 @@ const Sidebar = () => {
           <NavLink to="/admin/recipients" className="nav-link sidebar-link text-white"><GiReceiveMoney/> Review Recipients</NavLink>
         </li>
         <li className="nav-item">
-          <NavLink to="/admin/post-product" className="nav-link sidebar-link text-white"><MdLocalGroceryStore/> Post Product</NavLink>
+          <NavLink to="/admin/post-product" className="nav-link sidebar-link text-white"><MdLocalGroceryStore/> Manage Products</NavLink>
         </li>
         <li className="nav-item">
           <NavLink to="/admin/order-status" className="nav-link sidebar-link text-white"><TbTruckDelivery /> Order Status</NavLink>

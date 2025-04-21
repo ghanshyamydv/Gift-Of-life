@@ -14,8 +14,6 @@ const EditStoryForm = ({story, onClose}) => {
     window.scrollTo(0, 0); // Scroll to top on route change
     if(!isLoggedIn){
       navigate("/login")
-      console.log("hi");
-      
       toast.warning("Please log in to proceed.")
     }
   },[isLoggedIn, navigate, pathname])
