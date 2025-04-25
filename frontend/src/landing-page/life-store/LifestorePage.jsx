@@ -1,12 +1,15 @@
 import React, { useState,useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router';
 import axios from 'axios';
+import { MdLocalGroceryStore } from "react-icons/md";
 import { AuthContext } from '../../AuthProvider';
 
 const LifeStorePage = () => {
   const {backendUrl}=useContext(AuthContext);
   const navigate=useNavigate();
   const [products, setProducts] = useState([]);
+  const [cart, setCart] = useState([]);
+  const [showCart, setShowCart]=useState(false);
     // Fetch data from the server
     useEffect(() => {
       const fetchData = async () => {
@@ -20,11 +23,31 @@ const LifeStorePage = () => {
       fetchData();
     }, []);
 
+    // Fetch data from the server
+    useEffect(() => {
+      const fetchData = async () => {
+        try {
+          const response = localStorage.getItem('lifeStoreCart');
+          const parsedCart = response ? JSON.parse(response) : []; // fallback to empty array
+          setCart(parsedCart);
+        } catch (err) {
+          console.log("error :", err);
+        }
+      };
+      fetchData();
+    }, []);
 
-  const [cart, setCart] = useState([]);
+
+ 
 
   const addToCart = (product) => {
-    setCart([...cart, product]);
+    const productAlreadyExist=cart.find((item)=>item._id===product._id);
+    if(!productAlreadyExist){
+      localStorage.setItem('lifeStoreCart', JSON.stringify([...cart, product]));
+      const response = localStorage.getItem('lifeStoreCart');
+      const parsedCart = response ? JSON.parse(response) : []; // fallback to empty array
+      setCart(parsedCart);
+    }
   };
 
   const handleBuyNow=(product)=>{
@@ -43,10 +66,23 @@ const LifeStorePage = () => {
     }
   }
 
+  const handleRemove=(product)=>{
+    localStorage.setItem('lifeStoreCart', JSON.stringify(cart.filter(item=>item._id!==product._id)));
+      const response = localStorage.getItem('lifeStoreCart');
+      const parsedCart = response ? JSON.parse(response) : []; // fallback to empty array
+      setCart(parsedCart);
+  }
+
   return (
     <div className="container mt-2">
-      <h2 className="text-center mb-4">Welcome To Life Store</h2>
-      <form className='d-flex justify-content-center mb-2' onSubmit={handleSearch}>
+      
+      <div className='d-flex justify-content-between mt-4'>
+      <h2 className="text-centermb-4" onClick={()=>setShowCart(false)}>Life Store</h2>
+      <div><MdLocalGroceryStore className='fs-1' onClick={()=>{setShowCart(true)}}/><span className='text-white text-center rounded-circle bg-black d-block position-relative' style={{width:"18px", height:"18px", fontSize:"12px", bottom:"53px", left:"12px"}}>{cart.length}</span></div>
+      </div>
+      {!showCart && 
+        <>
+        <form className='d-flex justify-content-center mb-2' onSubmit={handleSearch}>
         <input className='form-control border-primary' style={{width:"300px"}} type="text" name='searchInput'/>
         <button type='submit' className='btn btn-outline-primary ms-2'>Search</button>
       </form>
@@ -81,38 +117,41 @@ const LifeStorePage = () => {
           </div>
         ))}
       </div>
+        </>
+      }
 
-      <div className="mt-5">
+      {showCart && 
+        <div className="mt-5">
         <h2>Your Cart</h2>
         {cart.length === 0 ? (
           <p>Your cart is empty.</p>
         ) : (
           <ul className="list-group">
-            {cart.map((item, index) => (
-              <li key={index} className="list-group-item d-flex align-item-center justify-content-between">
+            {cart.map((item) => (
+              <li key={item._id} className="list-group-item d-flex align-item-center justify-content-between">
                 <span>{item.name} - &#8377;{item.price.toFixed(2)}</span>
                 <div>
                 <button
                     className="btn btn-success"
                     style={{width:"150px"}}
-                    onClick={() => handleBuyNow()}
+                    onClick={() => handleBuyNow(item)}
                   >
                     Buy Now
                   </button>
                   <button
                     className="btn btn-danger ms-3"
                     style={{width:"150px"}}
-                    onClick={() => handleBuyNow()}
+                    onClick={() => handleRemove(item)}
                   >
                     Remove
                   </button>
                 </div>
               </li>
-              
             ))}
           </ul>
         )}
-      </div>
+        </div>
+      }
     </div>
   );
 };
