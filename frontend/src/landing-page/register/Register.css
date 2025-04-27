@@ -9,7 +9,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(0, 0, 0, 0.836);
+    background-color: rgba(0, 0, 0, 0.801);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -25,6 +25,7 @@
     width: 50%;
     overflow: hidden;
     z-index: 10000;
+    padding-bottom: 250px;
     border: none; /* Ensure no border is applied */
     box-shadow: none; /* Remove any box-shadow */
 }
