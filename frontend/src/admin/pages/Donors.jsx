@@ -30,7 +30,7 @@ const ConfirmPage=({donor,setShowConfirmPage})=>{
     const handleSubmitOtp= async()=>{
       if(recipientId && donor._id){
           try {
-              const response = await axios.post(`${backendUrl}/api/confirm-donor/transplant-otp`,{otp,id:donor._id});
+              const response = await axios.post(`${backendUrl}/api/confirm-donor/transplant-otp`,{otp,id:donor._id,recipientId});
               
               if(response.status===200){
                 setShowConfirmPage(false);

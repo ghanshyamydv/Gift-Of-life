@@ -160,7 +160,7 @@ transplant:{
 }
 ,organDonor:{
   type: mongoose.Schema.Types.ObjectId,
-  ref: 'Donor ',
+  ref: 'Donor',
 }
 }, { timestamps: true });
 
