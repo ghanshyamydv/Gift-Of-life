@@ -6,6 +6,8 @@ import { useFormik } from "formik";
 import { AuthContext } from "../../AuthProvider";
 import validateDonorSchema from "../../../public/js/validateDonor";
 import { toast } from 'react-toastify';
+import "./Register.css";
+
 let donorDetails = {
   fullName: "",
   dateOfBirth: "",
@@ -53,6 +55,7 @@ let donorDetails = {
 function DonorRegister() {
   const [moneyInput, setMoneyInput] = useState(false);
   const [someOrgan, setSomeOrgan] = useState(false);
+  const [loading, setLoading] = useState(false);
   const navigate=useNavigate();
   const { pathname } = useLocation();
 
@@ -78,8 +81,7 @@ function DonorRegister() {
     initialValues: donorDetails,
     validationSchema: validateDonorSchema,
     onSubmit: async (values, actions) => {
-      console.log(values);
-      
+      setLoading(true);
       // Sending data to backend
       try {
         const token = localStorage.getItem('token');
@@ -93,10 +95,12 @@ function DonorRegister() {
         );
           // Reset the form data
           actions.resetForm();
+          setLoading(false)
           navigate("/recipients")
           toast.success(response.data.message,{autoClose: 5000});
       }
       } catch (err) {
+        setLoading(false)
         toast.error(err.response.data.message);
       }
     },
@@ -104,6 +108,18 @@ function DonorRegister() {
 
   return (
     <div className="container">
+      {loading && <div className="custom-modal-overlay">
+        <div className="custom-modal-content">
+        <div className="d-flex align-items-center justify-content-center">
+        <span className="ms-2 fs-1 text-white">Submitting</span>
+          <div className="loading-spinner  pt-3">
+            <span className="dot"></span>
+            <span className="dot"></span>
+            <span className="dot"></span>
+          </div>
+        </div>
+          </div>
+      </div>}
       <h1>Register a decision to donate</h1>
       <p>
         Your decision to donate can save and transform lives. Thank you for

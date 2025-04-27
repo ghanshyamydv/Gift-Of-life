@@ -6,6 +6,7 @@ import { AuthContext } from "../../AuthProvider";
 import * as Yup from "yup";
 import validationRecipientSchema from "../../../public/js/validateRecepient";
 import { toast } from 'react-toastify';
+import "./Register.css";
 
 let recipientDetails={
   fullName: "",
@@ -58,6 +59,7 @@ function RecipientRegister() {
   const navigate=useNavigate();
   const { pathname } = useLocation();
   const {backendUrl,isLoggedIn} = useContext(AuthContext);
+  const [loading, setLoading] = useState(false);
   useEffect(()=>{
     window.scrollTo(0, 0); // Scroll to top on route change
     if(!isLoggedIn){
@@ -73,7 +75,7 @@ function RecipientRegister() {
       validationSchema: validationRecipientSchema,
       onSubmit: async (values, actions) => {
         // Sending data to backend
-        
+        setLoading(true)
         try {
           const token = localStorage.getItem('token');
             if(token){
@@ -86,9 +88,11 @@ function RecipientRegister() {
               );
                 toast.success(response.data.message,{autoClose: 5000})
                 actions.resetForm();
+                setLoading(false)
                 navigate("/donors")
             }
         } catch (err) {
+          setLoading(false)
           toast.error(err.response.data.message);
         }
       },
@@ -98,6 +102,18 @@ function RecipientRegister() {
 
   return (
     <div className="container">
+      {loading && <div className="custom-modal-overlay">
+        <div className="custom-modal-content">
+        <div className="d-flex align-items-center justify-content-center">
+        <span className="ms-2 fs-1 text-white">Submitting</span>
+          <div className="loading-spinner  pt-3">
+            <span className="dot"></span>
+            <span className="dot"></span>
+            <span className="dot"></span>
+          </div>
+        </div>
+          </div>
+          </div>}
       <h1>Register a decision to be a Recipient </h1>
       <p>
       Your decision to receive a donation can save and transform your life. Thank you for taking this important step. Fields marked with * are mandatory.

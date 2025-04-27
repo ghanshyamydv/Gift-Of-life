@@ -2,7 +2,6 @@
 import React ,{useContext, useEffect, useState} from 'react'
 import { useParams } from 'react-router';
 import axios from 'axios';
-import "./Story.css";
 import { AuthContext } from '../../AuthProvider';
 
 function ViewDonorStory() {
@@ -31,7 +30,7 @@ function ViewDonorStory() {
       </div>
 
       <div className="row">
-          <img src={donorStory.image.url} alt={donorStory.image.filename} className='story-image custom-story-image mb-2'/>
+          <div className='mb-2 col-12 col-md-4 col-xl-3'><img src={donorStory.image.url} alt={donorStory.image.filename}/></div>
           <p className='fs-6' style={{ whiteSpace: "pre-wrap", wordBreak: "break-word"}}>{donorStory.description}</p>
       </div>
     </div>
