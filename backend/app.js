@@ -874,7 +874,7 @@ app.post("/api/confirm-donor/transplant",wrapAsync(
 
 app.post("/api/confirm-donor/transplant-otp", wrapAsync(async (req,res, next)=>{
   if(otpStorage.otp===req.body.otp){
-    await Donor.findByIdAndUpdate(req.body.id,{transplant:"successful"});
+    await Donor.findByIdAndUpdate(req.body.id,{transplant:"success"});
     otpStorage.otp=null;
     res.status(200).json({message:"OTP verified successfully!"});
   }
@@ -901,7 +901,7 @@ app.post("/api/confirm-recipient/transplant",wrapAsync(
 
 app.post("/api/confirm-recipient/transplant-otp", wrapAsync(async (req,res, next)=>{
   if(otpStorage.otp===req.body.otp){
-    await Recipient.findByIdAndUpdate(req.body.id,{transplant:"successful"});
+    await Recipient.findByIdAndUpdate(req.body.id,{transplant:"success"});
     otpStorage.otp=null;
     res.status(200).json({message:"OTP verified successfully!"});
   }
